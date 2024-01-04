@@ -1,0 +1,42 @@
+{
+  "name": "@mine-scripters/minecraft-script-dialogue",
+  "version": "0.1.0",
+  "homepage": "https://github.com/mine-scripters/minecraft-script-dialogue",
+  "description": "Minecraft Script Dialogue",
+  "main": "./dist/MinecraftScriptDialogue.js",
+  "types": "./dist/MinecraftScriptDialogue.d.ts",
+  "private": false,
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "del": "^6.0.0",
+    "esbuild": "0.19.11",
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.3.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "prettier": "^3.1.1",
+    "rollup": "^4.9.2",
+    "rollup-plugin-ts": "^3.4.5",
+    "source-map": "^0.7.4",
+    "typescript": "^4.4.3"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "prettier": "prettier scripts/** *.json ./*.js README.md --write",
+    "enablemcloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436",
+    "enablemcpreviewloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-424268864-5579737-879501358-346833251-474568803-887069379-4040235476"
+  },
+  "dependencies": {
+    "@minecraft/server": "^1.7.0",
+    "@minecraft/server-ui": "1.1.0"
+  },
+  "files": [
+    "package.json",
+    "dist/**",
+    "README.md",
+    "LICENSE.txt"
+  ],
+  "keywords": [
+    "minecraft"
+  ]
+}
