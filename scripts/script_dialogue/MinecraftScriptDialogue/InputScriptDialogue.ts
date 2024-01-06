@@ -392,9 +392,9 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
       return {
         [name]: value,
       };
-    }) as InputScriptDialogueResponseValues<K>;
+    });
 
-    return new InputScriptDialogueResponse<K>(values);
+    return new InputScriptDialogueResponse<K>(Object.assign({}, ...values));
   }
 }
 
