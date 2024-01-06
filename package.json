@@ -7,6 +7,7 @@
   "types": "./dist/MinecraftScriptDialogue.d.ts",
   "private": false,
   "devDependencies": {
+    "@types/jest": "^29.5.11",
     "@types/node": "^20.10.6",
     "del": "^6.0.0",
     "esbuild": "0.19.11",
@@ -18,13 +19,18 @@
     "rollup": "^4.9.2",
     "rollup-plugin-ts": "^3.4.5",
     "source-map": "^0.7.4",
+    "ts-jest": "^29.1.1",
     "typedoc": "^0.25.6",
     "typescript": "^4.4.3"
   },
   "scripts": {
     "build": "rollup -c",
     "docs": "typedoc",
-    "prettier": "prettier scripts/** *.json ./*.js README.md --write",
+    "test": "jest",
+    "prettier": "npm run prettier:base -- --write",
+    "prettier:check": "npm run prettier:base -- --check",
+    "prettier:base": "prettier scripts/** *.json ./*.js README.md",
+    "prettier:fix": "",
     "enablemcloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436",
     "enablemcpreviewloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-424268864-5579737-879501358-346833251-474568803-887069379-4040235476"
   },
