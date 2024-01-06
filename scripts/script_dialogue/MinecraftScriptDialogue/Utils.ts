@@ -8,11 +8,6 @@ export const asyncWait = async (ticks: number): Promise<void> => {
   });
 };
 
-interface TranslateType {
-  (translate: string, with_: RawMessage): RawMessage;
-  (translate: string, ...with_: Array<string>): RawMessage;
-}
-
 /**
  * Translation helper to make it easier to define a RawMessage with
  * translated text.
@@ -22,13 +17,21 @@ interface TranslateType {
  * @param with_
  * @constructor
  */
+interface TranslateType {
+  (translate: string, with_: RawMessage): RawMessage;
+  (translate: string, ...with_: Array<string>): RawMessage;
+}
+
 export const TRANSLATE: TranslateType = (
   translate: string,
-  with_: string | Array<string> | RawMessage
-): RawMessage => ({
-  translate,
-  with: typeof with_ === 'string' ? [with_] : with_,
-});
+  with_: string | RawMessage,
+  ...with__: Array<string>
+): RawMessage => {
+  return {
+    translate,
+    with: typeof with_ === 'string' ? [with_, ...with__] : with_,
+  };
+};
 
 // Use a builder pattern
 // builder pattern: https://medium.com/geekculture/implementing-a-type-safe-object-builder-in-typescript-e973f5ecfb9c
