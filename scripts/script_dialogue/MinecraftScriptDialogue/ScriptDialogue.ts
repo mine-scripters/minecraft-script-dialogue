@@ -6,29 +6,73 @@ export interface Showable<T> {
   show(player: Player): Promise<T>;
 }
 
+/**
+ * Displayed text in dialogues - can be a string or a RawMessage used for translations
+ *
+ * @category Script dialogue
+ */
 export type ScriptDialogueString = string | RawMessage;
 
+const DefaultShowDialogOptions: Readonly<OptionalShowDialogueOptions> = Object.freeze({
+  lockPlayerCamera: true,
+  busyRetriesCount: 5,
+  busyRetriesTick: 5,
+});
+
 export interface OptionalShowDialogueOptions {
+  /**
+   * Locks the camera when opening a script dialogue. This prevents the camera from panning when moving the
+   * mouse/dragging on transitions.
+   * @defaultValue true
+   */
   lockPlayerCamera: boolean;
+  /**
+   * Configures how many times retry the script dialogue if the player is busy.
+   * @see {@link busyRetriesTick}
+   * @defaultValue 5
+   */
   busyRetriesCount: number;
+  /**
+   * Configures how long (in ticks) to wait between retries if the player is busy.
+   * @see {@link busyRetriesCount}
+   * @defaultValue 5
+   */
   busyRetriesTick: number;
 }
 
 interface RequiredShowDialogueOptions {
+  /**
+   * Player to show the script dialogue to
+   */
   player: Player;
 }
 
+/**
+ * Options used when opening a script dialogue.
+ * Controls the targeted player, the use of the camera and if we want to wait if the user is busy.
+ *
+ * @category Script dialogue
+ */
 export interface ShowDialogueOptions extends Partial<OptionalShowDialogueOptions>, RequiredShowDialogueOptions {}
 
 export interface ResolvedShowDialogueOptions extends RequiredShowDialogueOptions, OptionalShowDialogueOptions {}
 
+/**
+ * Base class for all the script dialogues
+ *
+ * @category Script dialogue
+ */
 export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
-  private readonly DefaultShowDialogOptions: OptionalShowDialogueOptions = Object.freeze({
-    lockPlayerCamera: true,
-    busyRetriesCount: 5,
-    busyRetriesTick: 5,
-  });
+  protected constructor() {}
 
+  /**
+   * Opens the script dialogue. It requires the {@link ShowDialogueOptions#player player} as one of the options.
+   *
+   * You can configure displaying features by setting the optional values in the {@link ShowDialogueOptions options}
+   * @param options used to configure what and how to display the script dialogue.
+   *
+   * @see {@link ShowDialogueOptions}
+   */
   async open(options: ShowDialogueOptions): Promise<T | DialogueCanceledResponse | DialogueRejectedResponse> {
     const resolvedOptions = this.resolveShowDialogueOptions(options);
 
@@ -90,7 +134,7 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
 
   private resolveShowDialogueOptions(options: ShowDialogueOptions): ResolvedShowDialogueOptions {
     return {
-      ...this.DefaultShowDialogOptions,
+      ...DefaultShowDialogOptions,
       ...options,
     };
   }
@@ -99,21 +143,61 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
   protected abstract processResponse(response: FormResponse, options: ResolvedShowDialogueOptions): T;
 }
 
+/**
+ * Base class for script dialogue responses
+ *
+ * @category Responses
+ */
 export abstract class ScriptDialogueResponse {}
 
+/**
+ * Dialogue response when the script dialogue was canceled.
+ *
+ * Typically this happens if the player was busy when trying to open the script dialogue or if the user
+ * pressed the close button (x).
+ *
+ * Valid reasons can be seen in {@link @minecraft/server-ui!FormCancelationReason FormCancelationReason}
+ *
+ * @category Responses
+ */
 export class DialogueCanceledResponse extends ScriptDialogueResponse {
+  /**
+   * Reason the script dialogue was cancel.
+   */
   readonly reason: FormCancelationReason;
 
+  /**
+   * @internal
+   */
   constructor(reason: FormCancelationReason) {
     super();
     this.reason = reason;
   }
 }
 
+/**
+ * Dialogue response when the script dialogue was rejected, throwing an exception.
+ *
+ * Reasons can be seen in {@link @minecraft/server-ui!FormRejectReason FormRejectReason} if any reason could be
+ * determined.
+ *
+ * Known reasons can be seen in {@link @minecraft/server-ui!FormRejectReason FormRejectReason}
+ * @category Responses
+ */
 export class DialogueRejectedResponse extends ScriptDialogueResponse {
+  /**
+   * Reason the script dialogue was rejected if there was any, else the {@link exception} needs to be checked
+   * to further determine what was the error.
+   */
   readonly reason?: FormRejectReason;
+  /**
+   * Exception that was throw to rejected the script dialogue.
+   */
   readonly exception: unknown;
 
+  /**
+   * @internal
+   */
   constructor(reason: FormRejectReason | undefined, exception: unknown) {
     super();
     this.reason = reason;
@@ -121,9 +205,27 @@ export class DialogueRejectedResponse extends ScriptDialogueResponse {
   }
 }
 
+/**
+ * Response for button script dialogues.
+ *
+ * Contains the selected button's name.
+ *
+ * @category Responses
+ * @category Dual button script dialogue
+ * @category Multi button script dialogue
+ */
 export class ButtonDialogueResponse<T extends string> extends ScriptDialogueResponse {
+  /**
+   * Selected button's name.
+   *
+   * @see {@link DualButton#name}
+   * @see {@link MultiButton#name}
+   */
   readonly selected: T;
 
+  /**
+   * @internal
+   */
   constructor(selected: T) {
     super();
     this.selected = selected;

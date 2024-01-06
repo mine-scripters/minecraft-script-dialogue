@@ -1,16 +1,49 @@
 import { ResolvedShowDialogueOptions, ScriptDialogue, ScriptDialogueString, Showable } from './ScriptDialogue';
 import { ModalFormData, ModalFormResponse } from '@minecraft/server-ui';
 
-type InputValue = string | number | boolean;
+/**
+ * Type for each input's value.
+ *
+ * @category Input script dialogue
+ */
+export type InputValue = string | number | boolean;
 
+/**
+ * Initializes a empty input script dialogue.
+ *
+ * Elements needs to be added using {@link InputScriptDialogue#addElement} or {@link InputScriptDialogue#addElements}
+ *
+ * @category Creation
+ * @category Input script dialogue
+ *
+ * @param title Title for the script dialogue
+ */
 export const inputScriptDialogue = (title: ScriptDialogueString) => {
   return new InputScriptDialogue<never>(title, []);
 };
 
+/**
+ * Creates a new dropdown element to use in a input script dialogue.
+ *
+ * @category Input script dialogue
+ * @param name
+ * @param label
+ */
 export const inputDropdown = <K extends string>(name: K, label: ScriptDialogueString) => {
   return new InputDropdown<K>(name, label, [], 0);
 };
 
+/**
+ * Creates a new slider element to use in a input script dialogue.
+ *
+ * @category Input script dialogue
+ * @param name
+ * @param label
+ * @param minimumValue
+ * @param maximumValue
+ * @param valueStep
+ * @param defaultValue
+ */
 export const inputSlider = <K extends string>(
   name: K,
   label: ScriptDialogueString,
@@ -22,6 +55,15 @@ export const inputSlider = <K extends string>(
   return new InputSlider<K>(name, label, minimumValue, maximumValue, valueStep, defaultValue);
 };
 
+/**
+ * Creates a new text field element to use in a input script dialogue.
+ *
+ * @category Input script dialogue
+ * @param name
+ * @param label
+ * @param placeholderText
+ * @param defaultValue
+ */
 export const inputText = <K extends string>(
   name: K,
   label: ScriptDialogueString,
@@ -31,30 +73,80 @@ export const inputText = <K extends string>(
   return new InputText<K>(name, label, placeholderText, defaultValue);
 };
 
+/**
+ * Creates a new toggle element to use in a input script dialogue.
+ *
+ * @category Input script dialogue
+ * @param name
+ * @param label
+ * @param defaultValue
+ */
 export const inputToggle = <K extends string>(name: K, label: ScriptDialogueString, defaultValue?: boolean) => {
   return new InputToggle<K>(name, label, defaultValue);
 };
 
-class InputElement<K extends string> {
+/**
+ * Base for all input elements displayed in the input script dialogue.
+ *
+ * You don't need to instantiate this class directly, instead you can use any of the builder function
+ * depending the type you want to use.
+ *
+ * @category Input script dialogue
+ * @see {@link inputDropdown}
+ * @see {@link inputSlider}
+ * @see {@link inputToggle}
+ * @see {@link inputText}
+ */
+export class InputElement<K extends string> {
+  /**
+   * @internal
+   */
   readonly name: K;
+  /**
+   * @internal
+   */
   readonly label: ScriptDialogueString;
 
+  /**
+   * @internal
+   */
   constructor(name: K, label: ScriptDialogueString) {
     this.name = name;
     this.label = label;
   }
 }
 
-class InputWithDefaultValue<K extends string, V extends InputValue> extends InputElement<K> {
+/**
+ * Base for all input elements that have a fixed default value.
+ *
+ * You don't need to instantiate this class directly, instead you can use any of the builder function
+ * depending the type you want to use.
+ *
+ * @category Input script dialogue
+ * @see {@link inputDropdown}
+ * @see {@link inputSlider}
+ * @see {@link inputToggle}
+ * @see {@link inputText}
+ */
+export class InputWithDefaultValue<K extends string, V extends InputValue> extends InputElement<K> {
+  /**
+   * @internal
+   */
   readonly defaultValue: V;
 
+  /**
+   * @internal
+   */
   constructor(name: K, label: ScriptDialogueString, defaultValue: V) {
     super(name, label);
     this.defaultValue = defaultValue;
   }
 }
 
-class InputDropdownOption {
+/**
+ * @internal
+ */
+export class InputDropdownOption {
   readonly label: ScriptDialogueString;
   readonly value: InputValue;
 
@@ -64,10 +156,27 @@ class InputDropdownOption {
   }
 }
 
-class InputDropdown<K extends string> extends InputElement<K> {
+/**
+ * Input element's representation of a dropdown.
+ *
+ * Instantiate by using {@link inputDropdown}
+ *
+ * @category Input script dialogue
+ * @see {@link inputDropdown}
+ */
+export class InputDropdown<K extends string> extends InputElement<K> {
+  /**
+   * @internal
+   */
   readonly options: ReadonlyArray<InputDropdownOption>;
+  /**
+   * @internal
+   */
   readonly defaultValueIndex: number;
 
+  /**
+   * @internal
+   */
   constructor(
     name: K,
     label: ScriptDialogueString,
@@ -79,10 +188,19 @@ class InputDropdown<K extends string> extends InputElement<K> {
     this.options = options;
   }
 
+  /**
+   * Sets the default index of the option you would like to use
+   * @param defaultValueIndex
+   */
   setDefaultValueIndex(defaultValueIndex: number) {
     return new InputDropdown<K>(this.name, this.label, [...this.options], defaultValueIndex);
   }
 
+  /**
+   * Adds an option to the dropdown
+   * @param label
+   * @param value
+   */
   addOption(label: ScriptDialogueString, value: InputValue): InputDropdown<K> {
     return new InputDropdown<K>(
       this.name,
@@ -93,10 +211,31 @@ class InputDropdown<K extends string> extends InputElement<K> {
   }
 }
 
-class InputSlider<K extends string> extends InputWithDefaultValue<K, number> {
+/**
+ * Input element's representation of a slider.
+ *
+ * Instantiate by using {@link inputSlider}
+ *
+ * @category Input script dialogue
+ * @see {@link inputSlider}
+ */
+export class InputSlider<K extends string> extends InputWithDefaultValue<K, number> {
+  /**
+   * @internal
+   */
   readonly minimumValue: number;
+  /**
+   * @internal
+   */
   readonly maximumValue: number;
+  /**
+   * @internal
+   */
   readonly valueStep: number;
+
+  /**
+   * @internal
+   */
   constructor(
     name: K,
     label: ScriptDialogueString,
@@ -112,35 +251,89 @@ class InputSlider<K extends string> extends InputWithDefaultValue<K, number> {
   }
 }
 
-class InputText<K extends string> extends InputWithDefaultValue<K, string> {
+/**
+ * Input element's representation of text field.
+ *
+ * Instantiate by using {@link inputText}
+ *
+ * @category Input script dialogue
+ * @see {@link inputText}
+ */
+export class InputText<K extends string> extends InputWithDefaultValue<K, string> {
+  /**
+   * @internal
+   */
   readonly placeholderText: ScriptDialogueString;
 
+  /**
+   * @internal
+   */
   constructor(name: K, label: ScriptDialogueString, placeholderText: ScriptDialogueString, defaultValue?: string) {
     super(name, label, defaultValue ?? '');
     this.placeholderText = placeholderText;
   }
 }
 
-class InputToggle<K extends string> extends InputWithDefaultValue<K, boolean> {
+/**
+ * Input element's representation of toggle.
+ *
+ * Instantiate by using {@link inputToggle}
+ *
+ * @category Input script dialogue
+ * @see {@link inputToggle}
+ */
+export class InputToggle<K extends string> extends InputWithDefaultValue<K, boolean> {
+  /**
+   * @internal
+   */
   constructor(name: K, label: ScriptDialogueString, defaultValue?: boolean) {
     super(name, label, !!defaultValue);
   }
 }
 
-class InputScriptDialogue<K extends string> extends ScriptDialogue<InputScriptDialogueResponse<K>> {
-  readonly elements: Array<InputElement<K>>;
-  readonly title: ScriptDialogueString;
+/**
+ * Class used to build input script dialogues.
+ *
+ * Use {@link inputScriptDialogue} to initialize one.
+ *
+ * @category Input script dialogue
+ * @see {@link inputScriptDialogue}
+ */
+export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputScriptDialogueResponse<K>> {
+  private readonly elements: Array<InputElement<K>>;
+  private readonly title: ScriptDialogueString;
 
+  /**
+   * @internal
+   */
   constructor(title: ScriptDialogueString, elements: Array<InputElement<K>>) {
     super();
     this.title = title;
     this.elements = elements;
   }
 
+  /**
+   * Adds an input element to the input script dialogue.
+   * @param element
+   *
+   * @see {@link inputDropdown}
+   * @see {@link inputSlider}
+   * @see {@link inputToggle}
+   * @see {@link inputText}
+   */
   addElement<KEY extends string>(element: InputElement<KEY>) {
     return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, element]);
   }
 
+  /**
+   * Adds multiple input element to the input script dialogue.
+   * @param elements
+   *
+   * @see {@link inputDropdown}
+   * @see {@link inputSlider}
+   * @see {@link inputToggle}
+   * @see {@link inputText}
+   */
   addElements<KEY extends string>(elements: Array<InputElement<KEY>>) {
     return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, ...elements]);
   }
@@ -205,11 +398,25 @@ class InputScriptDialogue<K extends string> extends ScriptDialogue<InputScriptDi
   }
 }
 
-type InputScriptDialogueResponseValues<K extends string> = {
+/**
+ * Dialogue response values, each value is indexed by the name of the button.
+ * @category Input script dialogue
+ */
+export type InputScriptDialogueResponseValues<K extends string> = {
   [key in K]: InputValue;
 };
 
+/**
+ * Script dialogue response from a input script dialogue.
+ * Holds a map with the values used by each of the element's name.
+ *
+ * @category Input script dialogue
+ * @category Responses
+ */
 export class InputScriptDialogueResponse<K extends string> {
+  /**
+   * Map with the values of the script dialogue..
+   */
   readonly values: InputScriptDialogueResponseValues<K>;
 
   constructor(values: InputScriptDialogueResponseValues<K>) {
