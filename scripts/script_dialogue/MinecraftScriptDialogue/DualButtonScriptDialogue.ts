@@ -5,14 +5,35 @@ import {
   ScriptDialogueString,
   Showable,
 } from './ScriptDialogue';
-import { FormResponse, MessageFormData, MessageFormResponse } from '@minecraft/server-ui';
+import { MessageFormData, MessageFormResponse } from '@minecraft/server-ui';
 
-interface DualButton<T extends string> {
+/**
+ * Dual button content.
+ *
+ * Note that dual buttons do not allow an icon to be used
+ * @category Dual button script dialogue
+ */
+export interface DualButton<T extends string> {
+  /**
+   * Name used by the button, response is recorded using this name
+   */
   name: T;
+  /**
+   * Displayed button's value
+   */
   text: ScriptDialogueString;
   // dialogue?: ScriptDialogueString;
 }
 
+/**
+ * Creates a new dual button script dialogue
+ *
+ * @category Creation
+ * @category Dual button script dialogue
+ * @param title Title of the dual button script dialogue
+ * @param topButton Contents of the top button
+ * @param bottomButton Contents of the bottom button
+ */
 export const dualButtonScriptDialogue = <T extends string>(
   title: ScriptDialogueString,
   topButton: DualButton<T>,
@@ -21,12 +42,24 @@ export const dualButtonScriptDialogue = <T extends string>(
   return new DualButtonScriptDialogue(title, undefined, topButton, bottomButton);
 };
 
-class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<ButtonDialogueResponse<T>> {
-  readonly title: ScriptDialogueString;
-  readonly body?: ScriptDialogueString;
-  readonly topButton: DualButton<T>;
-  readonly bottomButton: DualButton<T>;
+/**
+ * Dual button script dialogue class.
+ *
+ * User's don't need to instantiate this class directly, instead they can use {@link dualButtonScriptDialogue}.
+ *
+ * Allows the users to optionally set a value for the body by calling {@link DualButtonScriptDialogue#setBody setBody}.
+ *
+ * @category Dual button script dialogue
+ */
+export class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<ButtonDialogueResponse<T>> {
+  private readonly title: ScriptDialogueString;
+  private readonly body?: ScriptDialogueString;
+  private readonly topButton: DualButton<T>;
+  private readonly bottomButton: DualButton<T>;
 
+  /**
+   * @internal
+   */
   constructor(
     title: ScriptDialogueString,
     body: ScriptDialogueString | undefined,
@@ -40,11 +73,15 @@ class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<ButtonDi
     this.bottomButton = bottomButton;
   }
 
+  /**
+   * Sets content of the script dialogue
+   * @param body
+   */
   setBody(body: ScriptDialogueString) {
     return new DualButtonScriptDialogue(this.title, body, this.topButton, this.bottomButton);
   }
 
-  protected getShowable(options: ResolvedShowDialogueOptions): Showable<FormResponse> {
+  protected getShowable(options: ResolvedShowDialogueOptions): Showable<MessageFormResponse> {
     const data = new MessageFormData();
     data.title(this.title);
     if (this.body) {
@@ -57,8 +94,8 @@ class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<ButtonDi
     return data;
   }
 
-  protected processResponse(response: FormResponse, options: ResolvedShowDialogueOptions) {
-    const selectedButton = (response as MessageFormResponse).selection === 0 ? this.bottomButton : this.topButton;
+  protected processResponse(response: MessageFormResponse, options: ResolvedShowDialogueOptions) {
+    const selectedButton = response.selection === 0 ? this.bottomButton : this.topButton;
     return new ButtonDialogueResponse(selectedButton.name);
   }
 }

@@ -13,6 +13,15 @@ interface TranslateType {
   (translate: string, ...with_: Array<string>): RawMessage;
 }
 
+/**
+ * Translation helper to make it easier to define a RawMessage with
+ * translated text.
+ *
+ * @category Helpers
+ * @param translate
+ * @param with_
+ * @constructor
+ */
 export const TRANSLATE: TranslateType = (
   translate: string,
   with_: string | Array<string> | RawMessage

@@ -142,8 +142,12 @@ To integrate Minecraft Script Dialogue into your project, follow these steps:
 ### Using a Code Bundler
 
 If you are using a code bundler like [rollup](https://rollupjs.org/) or a similar tool,
-you can include @mine-scripters/minecraft-script-dialogue in your build.
+you can include [@mine-scripters/minecraft-script-dialogue](https://www.npmjs.com/package/@mine-scripters/minecraft-script-dialogue) in your build.
 
-## Manual Installation
+### Manual Installation
 
 Alternatively, you can manually include the library files from the [dist](./dist) directory in your project.
+
+## Documentation
+
+You can check the documentation hosted in our github pages.

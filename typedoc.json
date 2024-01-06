@@ -1,0 +1,29 @@
+{
+  "entryPoints": ["scripts/script_dialogue/MinecraftScriptDialogue/index.ts"],
+  "navigation": {
+    "includeCategories": true
+  },
+  "categoryOrder": [
+    "Creation",
+    "Script dialogue",
+    "Dual button script dialogue",
+    "Multi button script dialogue",
+    "Input script dialogue",
+    "Responses",
+    "Helpers"
+  ],
+  "githubPages": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "externalSymbolLinkMappings": {
+    "@minecraft/server-ui": {
+      "FormCancelationReason": "https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/minecraft/server-ui/formcancelationreason?view=minecraft-bedrock-stable",
+      "FormRejectReason": "https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/minecraft/server-ui/formrejectreason?view=minecraft-bedrock-stable"
+    },
+    "@minecraft/server": {
+      "Player": "https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/minecraft/server/player?view=minecraft-bedrock-stable",
+      "RawMessage": "https://learn.microsoft.com/en-us/minecraft/creator/scriptapi/minecraft/server/rawmessage?view=minecraft-bedrock-stable"
+    }
+  }
+}
