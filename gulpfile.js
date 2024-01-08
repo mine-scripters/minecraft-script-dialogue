@@ -27,10 +27,8 @@ const getMinecraftDir = () => {
     return (
       basePath + (useMinecraftPreview ? constants.environments.windows.preview : constants.environments.windows.stable)
     );
-  } else if(os.platform() === 'darwin'){
-    return (
-        basePath + constants.environments.mcpelauncher_mac
-    );
+  } else if (os.platform() === 'darwin') {
+    return basePath + constants.environments.mcpelauncher_mac;
   }
 
   return basePath + constants.environments.mcpelauncher;
