@@ -22,7 +22,7 @@ describe('DualButtonScriptDialogue', () => {
   it('Without body', async () => {
     const player = mockPlayer();
 
-    await createDualButtonScriptDialogue().open({ player });
+    await createDualButtonScriptDialogue().open({ player, lockPlayerCamera: true });
 
     expect(MessageFormData).toHaveBeenCalledTimes(1);
 
