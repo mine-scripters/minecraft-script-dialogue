@@ -40,4 +40,44 @@ describe('ScriptDialogue', () => {
         expect(player.runCommand).not.toHaveBeenCalled();
     });
 
+
+    it('test show retry 2', async () => {
+        const player = mockPlayer();
+
+        jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockReturnValueOnce({
+            canceled: true,
+            cancelationReason: FormCancelationReason.UserBusy,
+        });
+        const response = await createDualButtonScriptDialogue().open({ player, busyRetriesCount: 5 });
+
+        expect(MessageFormResponse).toHaveBeenCalledTimes(2);
+        expect(response).toBeInstanceOf(ButtonDialogueResponse);
+    });
+
+    it('test show retry 5', async () => {
+        const player = mockPlayer();
+
+        jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockReturnValue({
+            canceled: true,
+            cancelationReason: FormCancelationReason.UserBusy,
+        });
+        const response = await createDualButtonScriptDialogue().open({ player, busyRetriesCount: 5 });
+
+        expect(MessageFormResponse).toHaveBeenCalledTimes(6);
+        expect(response).toBeInstanceOf(DialogueCanceledResponse);
+    });
+
+    it('test show retry cancel false', async () => {
+        const player = mockPlayer();
+
+        jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockReturnValueOnce({
+            selection: 1,
+            canceled: false,
+        });
+
+        const response = await createDualButtonScriptDialogue().open({ player, busyRetriesCount: 5 });
+        expect(MessageFormResponse).toHaveBeenCalledTimes(1);
+        expect(response).toBeInstanceOf(ButtonDialogueResponse);
+    });
+
 });

@@ -107,7 +107,9 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
   private async show<T extends FormResponse>(showable: Showable<T>, options: ResolvedShowDialogueOptions): Promise<T> {
     let i = 0;
     while (true) {
+      console.log('ejecutando', i);
       const response = await showable.show(options.player);
+      console.log(JSON.stringify(response));
       if (response.canceled && response.cancelationReason === FormCancelationReason.UserBusy) {
         if (i < options.busyRetriesCount) {
           i++;
