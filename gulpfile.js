@@ -12,6 +12,7 @@ const dedicatedServerPath = 'C:/mc/bds/1.19.0/'; // if using Bedrock Dedicated S
 const constants = {
   environments: {
     mcpelauncher: '/.local/share/mcpelauncher/games/com.mojang/',
+    mcpelauncher_mac: '/Library/Application Support/mcpelauncher/games/com.mojang/',
     windows: {
       preview: '/AppData/Local/Packages/Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe/LocalState/games/com.mojang/',
       stable: '/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/',
@@ -25,6 +26,10 @@ const getMinecraftDir = () => {
   if (os.platform() === 'win32') {
     return (
       basePath + (useMinecraftPreview ? constants.environments.windows.preview : constants.environments.windows.stable)
+    );
+  } else if(os.platform() === 'darwin'){
+    return (
+        basePath + constants.environments.mcpelauncher_mac
     );
   }
 
@@ -67,7 +72,7 @@ const copy_content = gulp.parallel(copy_behavior_packs, copy_resource_packs);
 
 function compile_scripts() {
   return gulp
-    .src('scripts/**/*.ts')
+    .src(['scripts/**/*.ts', '!scripts/**/*.test.ts'])
     .pipe(sourcemaps.init())
     .pipe(
       ts({
