@@ -8,19 +8,12 @@ const asyncWait = async (ticks) => {
         }, ticks);
     });
 };
-/**
- * Translation helper to make it easier to define a RawMessage with
- * translated text.
- *
- * @category Helpers
- * @param translate
- * @param with_
- * @constructor
- */
-const TRANSLATE = (translate, with_) => ({
-    translate,
-    with: typeof with_ === 'string' ? [with_] : with_,
-});
+const TRANSLATE = (translate, with_, ...with__) => {
+    return {
+        translate,
+        with: typeof with_ === 'string' ? [with_, ...with__] : with_,
+    };
+};
 // Use a builder pattern
 // builder pattern: https://medium.com/geekculture/implementing-a-type-safe-object-builder-in-typescript-e973f5ecfb9c
 // Needs updating to support optional types
@@ -68,8 +61,7 @@ const DefaultShowDialogOptions = Object.freeze({
  * @category Script dialogue
  */
 class ScriptDialogue {
-    constructor() {
-    }
+    constructor() { }
     /**
      * Opens the script dialogue. It requires the {@link ShowDialogueOptions#player player} as one of the options.
      *
@@ -685,7 +677,7 @@ class InputScriptDialogue extends ScriptDialogue {
                 [name]: value,
             };
         });
-        return new InputScriptDialogueResponse(values);
+        return new InputScriptDialogueResponse(Object.assign({}, ...values));
     }
 }
 /**

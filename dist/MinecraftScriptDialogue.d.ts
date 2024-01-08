@@ -519,10 +519,6 @@ declare class InputScriptDialogueResponse<K extends string> {
     readonly values: InputScriptDialogueResponseValues<K>;
     constructor(values: InputScriptDialogueResponseValues<K>);
 }
-interface TranslateType {
-    (translate: string, with_: RawMessage): RawMessage;
-    (translate: string, ...with_: Array<string>): RawMessage;
-}
 /**
  * Translation helper to make it easier to define a RawMessage with
  * translated text.
@@ -532,6 +528,10 @@ interface TranslateType {
  * @param with_
  * @constructor
  */
+interface TranslateType {
+    (translate: string, with_: RawMessage): RawMessage;
+    (translate: string, ...with_: Array<string>): RawMessage;
+}
 declare const TRANSLATE: TranslateType;
 export { dualButtonScriptDialogue, DualButtonScriptDialogue, multiButtonScriptDialogue, MultiButtonDialogue, inputText, inputToggle, inputSlider, inputDropdown, inputScriptDialogue, InputScriptDialogueResponse, ButtonDialogueResponse, ScriptDialogueResponse, ScriptDialogue, DialogueCanceledResponse, DialogueRejectedResponse, ShowDialogueOptions, ScriptDialogueString, TRANSLATE };
 export type { DualButton, MultiButton, InputElement, InputWithDefaultValue, InputText, InputToggle, InputSlider, InputDropdown, InputDropdownOption, InputScriptDialogue, InputValue, InputScriptDialogueResponseValues };
