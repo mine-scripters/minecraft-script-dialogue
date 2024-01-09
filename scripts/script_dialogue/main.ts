@@ -18,7 +18,19 @@ system.afterEvents.scriptEventReceive.subscribe(async (event) => {
     const player = event.sourceEntity;
     const response = await multiButtonScriptDialogue(TRANSLATE('minescripters:example_01.title'))
       .setBody('This is my content')
-      .addButton('one', 'Button one')
+      .addButton('one', 'Button with callback',undefined,async (selected)=>{
+          await multiButtonScriptDialogue('You selected')
+              .setBody(`You've selected: ${selected} using the Callback`)
+              .addButtons([
+                  {
+                      name: 'ok',
+                      text: 'OK',
+                  },
+              ])
+              .open({
+                  player,
+              });
+      })
       .addButton('two', 'Button two')
       .addButton('three', 'Button three')
       .open({
@@ -27,6 +39,7 @@ system.afterEvents.scriptEventReceive.subscribe(async (event) => {
         busyRetriesCount: 10,
         busyRetriesTick: 40,
       });
+
 
     if (response instanceof ButtonDialogueResponse) {
       await multiButtonScriptDialogue('You selected')
@@ -41,6 +54,7 @@ system.afterEvents.scriptEventReceive.subscribe(async (event) => {
           player,
         });
     }
+
   } else if (event.id === 'minescripters:test-script-dialogue-02' && event.sourceEntity instanceof Player) {
     // Try sending this event and opening the chat window again.
     // Minecraft can't open a dialogue in that situation as you are "busy".

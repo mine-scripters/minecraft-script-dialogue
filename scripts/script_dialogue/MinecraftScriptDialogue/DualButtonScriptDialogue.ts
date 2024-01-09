@@ -23,6 +23,8 @@ export interface DualButton<T extends string> {
    */
   text: ScriptDialogueString;
   // dialogue?: ScriptDialogueString;
+
+  callback ?: (selected: string) => Promise<void>;
 }
 
 /**
@@ -94,8 +96,11 @@ export class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<B
     return data;
   }
 
-  protected processResponse(response: MessageFormResponse, options: ResolvedShowDialogueOptions) {
+  protected async processResponse(response: MessageFormResponse, options: ResolvedShowDialogueOptions) {
     const selectedButton = response.selection === 0 ? this.bottomButton : this.topButton;
+    if(selectedButton.callback){
+      await selectedButton.callback(selectedButton.name);
+    }
     return new ButtonDialogueResponse(selectedButton.name);
   }
 }

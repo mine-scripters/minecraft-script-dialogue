@@ -362,10 +362,10 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
     return data;
   }
 
-  protected processResponse(
+  protected async processResponse(
     response: ModalFormResponse,
     options: ResolvedShowDialogueOptions
-  ): InputScriptDialogueResponse<K> {
+  ):  Promise<InputScriptDialogueResponse<K>> {
     const formValues = response.formValues ?? this.elements.map((_e) => undefined);
 
     const values = this.elements.map((element, index) => {
