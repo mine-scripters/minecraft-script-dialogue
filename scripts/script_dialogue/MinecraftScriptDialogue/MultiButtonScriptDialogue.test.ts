@@ -1,8 +1,15 @@
 import { multiButtonScriptDialogue } from './MultiButtonScriptDialogue';
-import { ActionFormData, ActionFormResponse, FormCancelationReason, FormRejectReason } from '@minecraft/server-ui';
+import {
+  ActionFormData,
+  ActionFormResponse,
+  FormCancelationReason,
+  FormRejectReason,
+  MessageFormResponse
+} from '@minecraft/server-ui';
 import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
 import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
+import {dualButtonScriptDialogue} from "./DualButtonScriptDialogue";
 
 const TITLE = 'my.title';
 const BODY = 'hello-world';
@@ -166,4 +173,41 @@ describe('MultiButtonScriptDialogue', () => {
     expect(response).toBeInstanceOf(DialogueRejectedResponse);
     expect((response as DialogueCanceledResponse).reason).toBe(FormRejectReason.MalformedResponse);
   });
+
+  it.only('call callback on button press', async () => {
+    const player = mockPlayer();
+    const callback = jest.fn();
+
+    jest.mocked<() => ActionFormResponse>(ActionFormResponse as any).mockReturnValue({
+      selection: 0,
+      canceled: false,
+    });
+
+
+    await multiButtonScriptDialogue(TITLE)
+        .addButton(BUTTON1.NAME, BUTTON1.TEXT, BUTTON1.ICON,callback)
+        .addButton(BUTTON2.NAME, BUTTON2.TEXT, BUTTON2.ICON)
+        .open({ player });
+
+      expect(callback).toHaveBeenCalledWith('button-01');
+  });
+
+  it('does not call callback on button press', async () => {
+    const player = mockPlayer();
+    const callback = jest.fn();
+
+    jest.mocked<() => ActionFormResponse>(ActionFormResponse as any).mockReturnValue({
+      selection: 1,
+      canceled: false,
+    });
+
+
+    await multiButtonScriptDialogue(TITLE)
+        .addButton(BUTTON1.NAME, BUTTON1.TEXT, BUTTON1.ICON, callback)
+        .addButton(BUTTON2.NAME, BUTTON2.TEXT, BUTTON2.ICON)
+        .open({ player });
+
+         expect(callback).not.toHaveBeenCalled();
+  });
+
 });
