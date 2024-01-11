@@ -140,7 +140,7 @@ function clean_localmc() {
     toDelete.push(mcdir + 'development_resource_packs/' + rpfoldername);
   }
 
-  return gulp.src(toDelete, { read: false }).pipe(vinylPaths(deleteAsyncForce));
+  return gulp.src(toDelete, { read: false, allowEmpty: true }).pipe(vinylPaths(deleteAsyncForce));
 }
 
 function deploy_localmc_behavior_packs() {
