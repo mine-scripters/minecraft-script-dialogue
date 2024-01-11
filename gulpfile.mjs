@@ -8,6 +8,7 @@ import { rollup } from 'rollup';
 import terser from '@rollup/plugin-terser';
 import rollupTs from 'rollup-plugin-ts';
 import fs from 'fs';
+import path from "path";
 
 // === CONFIGURABLE VARIABLES
 const bpfoldername = 'MinecraftDialogueScriptDemo';
@@ -117,10 +118,26 @@ async function compile_scripts() {
     sourcemapFile: 'scripts/script_dialogue',
   });
 
+  console.log('checking files', fs.readdirSync('build/behavior_packs/' + bpfoldername + '/scripts/script_dialogue'));
+
+  const mapFile = 'build/behavior_packs/_' + bpfoldername + `Debug/${outputScript}.map`;
+
+  fs.mkdirSync(
+    path.dirname(mapFile),
+    {
+      recursive: true
+    }
+  );
+
+  fs.renameSync(
+    'build/behavior_packs/' + bpfoldername + `/${outputScript}.map`,
+    'build/behavior_packs/_' + bpfoldername + `Debug/${outputScript}.map`
+  );
+
   console.log('compile_scripts 2');
-  await gulp
-    .src('build/behavior_packs/' + bpfoldername + '/scripts/**/*.js.map')
-    .pipe(gulp.dest('build/behavior_packs/_' + bpfoldername + 'Debug/scripts'));
+  // await gulp
+  //   .src('build/behavior_packs/' + bpfoldername + '/scripts/**/*.js.map')
+  //   .pipe(gulp.dest('build/behavior_packs/_' + bpfoldername + 'Debug/scripts'));
 
   console.log('compile_scripts 3');
   // await gulp
@@ -128,9 +145,9 @@ async function compile_scripts() {
   //   .pipe(vinylPaths(deleteAsyncForce))
   //   .pipe(debug());
 
-  await deleteAsync(['build/behavior_packs/' + bpfoldername + '/scripts/**/*.js.map'], {
-    force: true
-  });
+  // await deleteAsync(['build/behavior_packs/' + bpfoldername + '/scripts/**/*.js.map'], {
+  //   force: true
+  // });
 
   console.log('compile_scripts 4');
   console.log('checking files', fs.readdirSync('build/behavior_packs/' + bpfoldername + '/scripts/script_dialogue'));
