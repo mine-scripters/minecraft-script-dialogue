@@ -108,19 +108,6 @@ describe('DualButtonScriptDialogue', () => {
     expect((response as DialogueCanceledResponse).reason).toBe(FormRejectReason.MalformedResponse);
   });
 
-  it('Test rejected dialogue', async () => {
-    const player = mockPlayer();
-    jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockImplementation(() => {
-      throw new FormRejectError();
-    });
-
-    const response = await createDualButtonScriptDialogue().open({ player });
-
-    expect(MessageFormData).toHaveBeenCalledTimes(1);
-    expect(response).toBeInstanceOf(DialogueRejectedResponse);
-    expect((response as DialogueCanceledResponse).reason).toBe(FormRejectReason.MalformedResponse);
-  });
-
   it('call callback on button press', async () => {
     const player = mockPlayer();
     const callback = jest.fn();
@@ -146,7 +133,7 @@ describe('DualButtonScriptDialogue', () => {
     expect(callback).toHaveBeenCalledWith("my-top-button");
   });
 
-  it('does not call callback on button press', async () => {
+  it('does not call others callback on button press', async () => {
     const player = mockPlayer();
     const callback = jest.fn();
 

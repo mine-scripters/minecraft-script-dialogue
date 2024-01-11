@@ -52,7 +52,6 @@ export interface MultiButton<T extends string> {
 export class MultiButtonDialogue<T extends string> extends ScriptDialogue<ButtonDialogueResponse<T>> {
   private readonly title: ScriptDialogueString;
   private readonly body?: ScriptDialogueString;
-
   private readonly buttons: Array<MultiButton<T>>;
 
   /**

@@ -192,7 +192,7 @@ describe('MultiButtonScriptDialogue', () => {
       expect(callback).toHaveBeenCalledWith('button-01');
   });
 
-  it('does not call callback on button press', async () => {
+  it('does not call others callback on button press', async () => {
     const player = mockPlayer();
     const callback = jest.fn();
 
