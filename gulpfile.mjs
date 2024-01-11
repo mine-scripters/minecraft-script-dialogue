@@ -8,7 +8,7 @@ import { rollup } from 'rollup';
 import terser from '@rollup/plugin-terser';
 import rollupTs from 'rollup-plugin-ts';
 import fs from 'fs';
-import path from "path";
+import path from 'path';
 
 // === CONFIGURABLE VARIABLES
 const bpfoldername = 'MinecraftDialogueScriptDemo';
@@ -122,12 +122,9 @@ async function compile_scripts() {
 
   const mapFile = 'build/behavior_packs/_' + bpfoldername + `Debug/${outputScript}.map`;
 
-  fs.mkdirSync(
-    path.dirname(mapFile),
-    {
-      recursive: true
-    }
-  );
+  fs.mkdirSync(path.dirname(mapFile), {
+    recursive: true,
+  });
 
   fs.renameSync(
     'build/behavior_packs/' + bpfoldername + `/${outputScript}.map`,
