@@ -4,12 +4,12 @@ import {
   ActionFormResponse,
   FormCancelationReason,
   FormRejectReason,
-  MessageFormResponse
+  MessageFormResponse,
 } from '@minecraft/server-ui';
 import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
 import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
-import {dualButtonScriptDialogue} from "./DualButtonScriptDialogue";
+import { dualButtonScriptDialogue } from './DualButtonScriptDialogue';
 
 const TITLE = 'my.title';
 const BODY = 'hello-world';
@@ -183,13 +183,12 @@ describe('MultiButtonScriptDialogue', () => {
       canceled: false,
     });
 
-
     await multiButtonScriptDialogue(TITLE)
-        .addButton(BUTTON1.NAME, BUTTON1.TEXT, BUTTON1.ICON,callback)
-        .addButton(BUTTON2.NAME, BUTTON2.TEXT, BUTTON2.ICON)
-        .open({ player });
+      .addButton(BUTTON1.NAME, BUTTON1.TEXT, BUTTON1.ICON, callback)
+      .addButton(BUTTON2.NAME, BUTTON2.TEXT, BUTTON2.ICON)
+      .open({ player });
 
-      expect(callback).toHaveBeenCalledWith('button-01');
+    expect(callback).toHaveBeenCalledWith('button-01');
   });
 
   it('does not call others callback on button press', async () => {
@@ -201,13 +200,11 @@ describe('MultiButtonScriptDialogue', () => {
       canceled: false,
     });
 
-
     await multiButtonScriptDialogue(TITLE)
-        .addButton(BUTTON1.NAME, BUTTON1.TEXT, BUTTON1.ICON, callback)
-        .addButton(BUTTON2.NAME, BUTTON2.TEXT, BUTTON2.ICON)
-        .open({ player });
+      .addButton(BUTTON1.NAME, BUTTON1.TEXT, BUTTON1.ICON, callback)
+      .addButton(BUTTON2.NAME, BUTTON2.TEXT, BUTTON2.ICON)
+      .open({ player });
 
-         expect(callback).not.toHaveBeenCalled();
+    expect(callback).not.toHaveBeenCalled();
   });
-
 });

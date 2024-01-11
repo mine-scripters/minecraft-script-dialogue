@@ -3,7 +3,7 @@ import { FormCancelationReason, FormRejectReason, MessageFormData, MessageFormRe
 import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
 import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
-import {asyncWait} from "./Utils";
+import { asyncWait } from './Utils';
 
 const createDualButtonScriptDialogue = () => {
   return dualButtonScriptDialogue(
@@ -118,19 +118,19 @@ describe('DualButtonScriptDialogue', () => {
     });
 
     const response = await dualButtonScriptDialogue(
-        'my.title',
-        {
-          name: 'my-top-button',
-          text: 'my.top.button.text',
-          callback: callback
-        },
-        {
-          name: 'my-bottom-button',
-          text: 'my.bottom.button.text',
-        }
+      'my.title',
+      {
+        name: 'my-top-button',
+        text: 'my.top.button.text',
+        callback: callback,
+      },
+      {
+        name: 'my-bottom-button',
+        text: 'my.bottom.button.text',
+      }
     ).open({ player });
 
-    expect(callback).toHaveBeenCalledWith("my-top-button");
+    expect(callback).toHaveBeenCalledWith('my-top-button');
   });
 
   it('does not call others callback on button press', async () => {
@@ -143,19 +143,18 @@ describe('DualButtonScriptDialogue', () => {
     });
 
     const response = await dualButtonScriptDialogue(
-        'my.title',
-        {
-          name: 'my-top-button',
-          text: 'my.top.button.text',
-          callback: callback
-        },
-        {
-          name: 'my-bottom-button',
-          text: 'my.bottom.button.text',
-        }
+      'my.title',
+      {
+        name: 'my-top-button',
+        text: 'my.top.button.text',
+        callback: callback,
+      },
+      {
+        name: 'my-bottom-button',
+        text: 'my.bottom.button.text',
+      }
     ).open({ player });
 
     expect(callback).not.toHaveBeenCalled();
   });
-
 });

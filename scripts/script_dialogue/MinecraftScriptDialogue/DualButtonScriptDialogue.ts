@@ -24,7 +24,7 @@ export interface DualButton<T extends string> {
   text: ScriptDialogueString;
   // dialogue?: ScriptDialogueString;
 
-  callback ?: (selected: string) => Promise<void>;
+  callback?: (selected: string) => Promise<void>;
 }
 
 /**
@@ -98,7 +98,7 @@ export class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<B
 
   protected async processResponse(response: MessageFormResponse, options: ResolvedShowDialogueOptions) {
     const selectedButton = response.selection === 0 ? this.bottomButton : this.topButton;
-    if(selectedButton.callback){
+    if (selectedButton.callback) {
       await selectedButton.callback(selectedButton.name);
     }
     return new ButtonDialogueResponse(selectedButton.name);
