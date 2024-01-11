@@ -1,6 +1,5 @@
 import gulp from 'gulp';
-import debug from 'gulp-debug';
-import { deleteAsync, deleteSync } from 'del';
+import { deleteAsync } from 'del';
 import * as os from 'os';
 import vinylPaths from 'vinyl-paths';
 import { spawn } from 'child_process';
@@ -68,7 +67,7 @@ const inputScript = configInputScript ? configInputScript : getInputScript();
 const outputScript = configOutputScript ? configOutputScript : getOutputScript();
 
 const deleteAsyncForce = (patterns) => {
-  return deleteSync(patterns, { force: true });
+  return deleteAsync(patterns, { force: true });
 };
 
 const worldsFolderName = useMinecraftDedicatedServer ? 'worlds' : 'minecraftWorlds';
@@ -92,7 +91,6 @@ function copy_resource_packs() {
 const copy_content = gulp.parallel(copy_behavior_packs, copy_resource_packs);
 
 async function compile_scripts() {
-  console.log('compile_scripts 0');
   const bundle = await rollup({
     input: inputScript,
     external: ['@minecraft/server', '@minecraft/server-ui'],
@@ -110,15 +108,12 @@ async function compile_scripts() {
     ],
   });
 
-  console.log('compile_scripts 1');
   await bundle.write({
     file: 'build/behavior_packs/' + bpfoldername + `/${outputScript}`,
     format: 'es',
     sourcemap: true,
     sourcemapFile: 'scripts/script_dialogue',
   });
-
-  console.log('checking files', fs.readdirSync('build/behavior_packs/' + bpfoldername + '/scripts/script_dialogue'));
 
   const mapFile = 'build/behavior_packs/_' + bpfoldername + `Debug/${outputScript}.map`;
 
@@ -131,26 +126,7 @@ async function compile_scripts() {
     'build/behavior_packs/_' + bpfoldername + `Debug/${outputScript}.map`
   );
 
-  console.log('compile_scripts 2');
-  // await gulp
-  //   .src('build/behavior_packs/' + bpfoldername + '/scripts/**/*.js.map')
-  //   .pipe(gulp.dest('build/behavior_packs/_' + bpfoldername + 'Debug/scripts'));
-
-  console.log('compile_scripts 3');
-  // await gulp
-  //   .src(['build/behavior_packs/' + bpfoldername + '/scripts/**/*.js.map'], { read: false })
-  //   .pipe(vinylPaths(deleteAsyncForce))
-  //   .pipe(debug());
-
-  // await deleteAsync(['build/behavior_packs/' + bpfoldername + '/scripts/**/*.js.map'], {
-  //   force: true
-  // });
-
-  console.log('compile_scripts 4');
-  console.log('checking files', fs.readdirSync('build/behavior_packs/' + bpfoldername + '/scripts/script_dialogue'));
   return Promise.resolve();
-
-  // callback();
 }
 
 const build = gulp.series(clean_build, copy_content, compile_scripts);
@@ -174,11 +150,8 @@ function clean_localmc() {
 }
 
 function deploy_localmc_behavior_packs() {
-  console.log("Deploying to '" + mcdir + 'development_behavior_packs/' + bpfoldername + "'");
-  console.log(fs.readdirSync('build/behavior_packs/' + bpfoldername + '/scripts/script_dialogue'));
   return gulp
     .src(['build/behavior_packs/' + bpfoldername + '/**/*'])
-    .pipe(debug())
     .pipe(gulp.dest(mcdir + 'development_behavior_packs/' + bpfoldername));
 }
 
