@@ -82,7 +82,7 @@ class ScriptDialogue {
                 if (response.canceled) {
                     return new DialogueCanceledResponse(response.cancelationReason);
                 }
-                return this.processResponse(response, resolvedOptions);
+                return await this.processResponse(response, resolvedOptions);
             }
             catch (e) {
                 if (e && typeof e === 'object' && 'reason' in e) {
@@ -268,8 +268,11 @@ class DualButtonScriptDialogue extends ScriptDialogue {
         data.button2(this.topButton.text);
         return data;
     }
-    processResponse(response, options) {
+    async processResponse(response, options) {
         const selectedButton = response.selection === 0 ? this.bottomButton : this.topButton;
+        if (selectedButton.callback) {
+            await selectedButton.callback(selectedButton.name);
+        }
         return new ButtonDialogueResponse(selectedButton.name);
     }
 }
@@ -320,13 +323,14 @@ class MultiButtonDialogue extends ScriptDialogue {
      * @param text content of the button
      * @param iconPath path to an icon to show in the button
      */
-    addButton(name, text, iconPath) {
+    addButton(name, text, iconPath, callback) {
         return new MultiButtonDialogue(this.title, this.body, [
             ...this.buttons,
             {
                 name,
                 text,
                 iconPath,
+                callback,
             },
         ]);
     }
@@ -351,8 +355,11 @@ class MultiButtonDialogue extends ScriptDialogue {
         });
         return formData;
     }
-    processResponse(response, options) {
+    async processResponse(response, options) {
         const selectedButton = this.buttons[response.selection];
+        if (selectedButton.callback) {
+            await selectedButton.callback(selectedButton.name);
+        }
         return new ButtonDialogueResponse(selectedButton.name);
     }
 }
@@ -653,7 +660,7 @@ class InputScriptDialogue extends ScriptDialogue {
         });
         return data;
     }
-    processResponse(response, options) {
+    async processResponse(response, options) {
         const formValues = response.formValues ?? this.elements.map((_e) => undefined);
         const values = this.elements.map((element, index) => {
             const name = element.name;

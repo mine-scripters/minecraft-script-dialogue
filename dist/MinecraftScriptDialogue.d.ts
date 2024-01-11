@@ -66,7 +66,7 @@ declare abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
     private unlockPlayerCamera;
     private resolveShowDialogueOptions;
     protected abstract getShowable(options: ResolvedShowDialogueOptions): Showable<FormResponse>;
-    protected abstract processResponse(response: FormResponse, options: ResolvedShowDialogueOptions): T;
+    protected abstract processResponse(response: FormResponse, options: ResolvedShowDialogueOptions): Promise<T>;
 }
 /**
  * Base class for script dialogue responses
@@ -156,6 +156,8 @@ interface DualButton<T extends string> {
      * Displayed button's value
      */
     text: ScriptDialogueString;
+    // dialogue?: ScriptDialogueString;
+    callback?: (selected: string) => Promise<void>;
 }
 /**
  * Creates a new dual button script dialogue
@@ -191,7 +193,7 @@ declare class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<
      */
     setBody(body: ScriptDialogueString): DualButtonScriptDialogue<T>;
     protected getShowable(options: ResolvedShowDialogueOptions): Showable<MessageFormResponse>;
-    protected processResponse(response: MessageFormResponse, options: ResolvedShowDialogueOptions): ButtonDialogueResponse<T>;
+    protected processResponse(response: MessageFormResponse, options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T>>;
 }
 /**
  * Initializes a empty multi button script dialogue.
@@ -220,6 +222,8 @@ interface MultiButton<T extends string> {
      * Path to an icon used for the icon
      */
     iconPath?: string;
+    // dialogue?: ScriptDialogueString;
+    callback?: (selected: string) => Promise<void>;
 }
 /**
  * Class used to build multi button script dialogues.
@@ -248,14 +252,14 @@ declare class MultiButtonDialogue<T extends string> extends ScriptDialogue<Butto
      * @param text content of the button
      * @param iconPath path to an icon to show in the button
      */
-    addButton<NAME extends string>(name: NAME, text: ScriptDialogueString, iconPath?: string): MultiButtonDialogue<NonNullable<T | NAME>>;
+    addButton<NAME extends string>(name: NAME, text: ScriptDialogueString, iconPath?: string, callback?: (selected: string) => Promise<void>): MultiButtonDialogue<NonNullable<T | NAME>>;
     /**
      * Adds multiple buttons to the multi button script dialogue.
      * @param buttons array of buttons
      */
     addButtons<NAMES extends string>(buttons: Array<MultiButton<NAMES>>): MultiButtonDialogue<NonNullable<T | NAMES>>;
     protected getShowable(options: ResolvedShowDialogueOptions): Showable<ActionFormResponse>;
-    protected processResponse(response: ActionFormResponse, options: ResolvedShowDialogueOptions): ButtonDialogueResponse<T>;
+    protected processResponse(response: ActionFormResponse, options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T>>;
 }
 /**
  * Type for each input's value.
@@ -496,7 +500,7 @@ declare class InputScriptDialogue<K extends string> extends ScriptDialogue<Input
      */
     addElements<KEY extends string>(elements: Array<InputElement<KEY>>): InputScriptDialogue<K | KEY>;
     protected getShowable(options: ResolvedShowDialogueOptions): Showable<ModalFormResponse>;
-    protected processResponse(response: ModalFormResponse, options: ResolvedShowDialogueOptions): InputScriptDialogueResponse<K>;
+    protected processResponse(response: ModalFormResponse, options: ResolvedShowDialogueOptions): Promise<InputScriptDialogueResponse<K>>;
 }
 /**
  * Dialogue response values, each value is indexed by the name of the button.
