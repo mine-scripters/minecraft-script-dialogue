@@ -28,9 +28,10 @@ jobs:
         run: npm run test
       - name: Build
         run: npm run build
+      - name: Behavior pack build
+        run: gulp
       - uses: stefanzweifel/git-auto-commit-action@v5
+        if: ${{ github.ref == 'refs/heads/master' }}
         with:
           commit_message: Updates `./dist/*` files with latest changes
           file_pattern: dist/*
-      - name: Behavior pack build
-        run: gulp
