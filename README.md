@@ -15,7 +15,9 @@ Some of the issues addressed by this library include:
 - Answers being returned by index, making dynamic dialogues challenging to manage.
 - Camera movement when moving the mouse between dialogues, affecting the overall polish.
 - Lack of clarity on specific API functionalities, such as distinguishing between different types of dialogues.
-- Player could be busy status when trying to display a dialogue due to an open chat or similar scenarios.
+- The player may be in a 'busy' status when attempting to display a dialogue, often caused by
+  factors such as having an open chat, initiating the dialogue from an NPC dialogue, or other
+  ongoing activities. This state of being 'busy' can prevent the script dialogue from being shown.
 
 While future revisions of the API may address these concerns, this library aims to alleviate them in the meantime.
 
@@ -150,4 +152,5 @@ Alternatively, you can manually include the library files from the [dist](./dist
 
 ## Documentation
 
-You can check the documentation hosted in our github pages.
+You can check the API hosted in [github pages](https://mine-scripters.github.io/minecraft-script-dialogue/):
+https://mine-scripters.github.io/minecraft-script-dialogue/
