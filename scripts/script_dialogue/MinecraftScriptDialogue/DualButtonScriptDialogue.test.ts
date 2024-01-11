@@ -3,6 +3,7 @@ import { FormCancelationReason, FormRejectReason, MessageFormData, MessageFormRe
 import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
 import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
+import { asyncWait } from './Utils';
 
 const createDualButtonScriptDialogue = () => {
   return dualButtonScriptDialogue(
@@ -105,5 +106,55 @@ describe('DualButtonScriptDialogue', () => {
     expect(MessageFormData).toHaveBeenCalledTimes(1);
     expect(response).toBeInstanceOf(DialogueRejectedResponse);
     expect((response as DialogueCanceledResponse).reason).toBe(FormRejectReason.MalformedResponse);
+  });
+
+  it('call callback on button press', async () => {
+    const player = mockPlayer();
+    const callback = jest.fn();
+
+    jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockReturnValue({
+      selection: 1,
+      canceled: false,
+    });
+
+    const response = await dualButtonScriptDialogue(
+      'my.title',
+      {
+        name: 'my-top-button',
+        text: 'my.top.button.text',
+        callback: callback,
+      },
+      {
+        name: 'my-bottom-button',
+        text: 'my.bottom.button.text',
+      }
+    ).open({ player });
+
+    expect(callback).toHaveBeenCalledWith('my-top-button');
+  });
+
+  it('does not call others callback on button press', async () => {
+    const player = mockPlayer();
+    const callback = jest.fn();
+
+    jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockReturnValue({
+      selection: 0,
+      canceled: false,
+    });
+
+    const response = await dualButtonScriptDialogue(
+      'my.title',
+      {
+        name: 'my-top-button',
+        text: 'my.top.button.text',
+        callback: callback,
+      },
+      {
+        name: 'my-bottom-button',
+        text: 'my.bottom.button.text',
+      }
+    ).open({ player });
+
+    expect(callback).not.toHaveBeenCalled();
   });
 });

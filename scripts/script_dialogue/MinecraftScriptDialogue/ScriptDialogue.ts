@@ -88,7 +88,7 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
           return new DialogueCanceledResponse(response.cancelationReason!);
         }
 
-        return this.processResponse(response, resolvedOptions);
+        return await this.processResponse(response, resolvedOptions);
       } catch (e) {
         if (e && typeof e === 'object' && 'reason' in e) {
           const exception = e as any;
@@ -140,7 +140,7 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
   }
 
   protected abstract getShowable(options: ResolvedShowDialogueOptions): Showable<FormResponse>;
-  protected abstract processResponse(response: FormResponse, options: ResolvedShowDialogueOptions): T;
+  protected abstract processResponse(response: FormResponse, options: ResolvedShowDialogueOptions): Promise<T>;
 }
 
 /**

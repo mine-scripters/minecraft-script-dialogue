@@ -38,6 +38,7 @@ export interface MultiButton<T extends string> {
    */
   iconPath?: string;
   // dialogue?: ScriptDialogueString;
+  callback?: (selected: string) => Promise<void>;
 }
 
 /**
@@ -80,7 +81,8 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
   addButton<NAME extends string>(
     name: NAME,
     text: ScriptDialogueString,
-    iconPath?: string
+    iconPath?: string,
+    callback?: (selected: string) => Promise<void>
   ): MultiButtonDialogue<NonNullable<T | NAME>> {
     return new MultiButtonDialogue<NonNullable<T | NAME>>(this.title, this.body, [
       ...this.buttons,
@@ -88,6 +90,7 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
         name,
         text,
         iconPath,
+        callback,
       },
     ]) as MultiButtonDialogue<NonNullable<T | NAME>>;
   }
@@ -119,11 +122,14 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
     return formData;
   }
 
-  protected processResponse(
+  protected async processResponse(
     response: ActionFormResponse,
     options: ResolvedShowDialogueOptions
-  ): ButtonDialogueResponse<T> {
+  ): Promise<ButtonDialogueResponse<T>> {
     const selectedButton = this.buttons[response.selection as number];
+    if (selectedButton.callback) {
+      await selectedButton.callback(selectedButton.name);
+    }
     return new ButtonDialogueResponse<T>(selectedButton.name);
   }
 }
