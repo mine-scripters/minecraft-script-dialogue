@@ -1,4 +1,5 @@
 import gulp from 'gulp';
+import debug from 'gulp-debug';
 import { deleteAsync } from 'del';
 import * as os from 'os';
 import vinylPaths from 'vinyl-paths';
@@ -145,8 +146,10 @@ function clean_localmc() {
 
 function deploy_localmc_behavior_packs() {
   console.log("Deploying to '" + mcdir + 'development_behavior_packs/' + bpfoldername + "'");
+  console.log(fs.readdirSync('build/behavior_packs/' + bpfoldername + '/scripts/script_dialogue'));
   return gulp
     .src(['build/behavior_packs/' + bpfoldername + '/**/*'])
+    .pipe(debug())
     .pipe(gulp.dest(mcdir + 'development_behavior_packs/' + bpfoldername));
 }
 
