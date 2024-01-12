@@ -22,8 +22,12 @@ export interface DualButton<T extends string> {
    * Displayed button's value
    */
   text: ScriptDialogueString;
-  // dialogue?: ScriptDialogueString;
 
+  /**
+   * A function that is executed when the button is pressed.
+   * This function is executed before returning from {@link DualButtonScriptDialogue#open}.
+   * @param selected
+   */
   callback?: (selected: string) => Promise<void>;
 }
 
