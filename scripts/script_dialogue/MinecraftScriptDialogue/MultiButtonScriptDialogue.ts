@@ -1,4 +1,4 @@
-import { ActionFormData, ActionFormResponse, FormResponse } from '@minecraft/server-ui';
+import { ActionFormData, ActionFormResponse } from '@minecraft/server-ui';
 import {
   ButtonDialogueResponse,
   ResolvedShowDialogueOptions,
@@ -110,7 +110,7 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
     ]) as MultiButtonDialogue<NonNullable<T | NAMES>>;
   }
 
-  protected getShowable(options: ResolvedShowDialogueOptions): Showable<ActionFormResponse> {
+  protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ActionFormResponse> {
     const formData = new ActionFormData();
 
     formData.title(this.title);
@@ -128,7 +128,7 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
 
   protected async processResponse(
     response: ActionFormResponse,
-    options: ResolvedShowDialogueOptions
+    _options: ResolvedShowDialogueOptions
   ): Promise<ButtonDialogueResponse<T>> {
     const selectedButton = this.buttons[response.selection as number];
     if (selectedButton.callback) {

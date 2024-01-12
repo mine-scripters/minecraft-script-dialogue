@@ -10,7 +10,6 @@ import {
   inputSlider,
   inputText,
   inputToggle,
-  InputToggle,
 } from './MinecraftScriptDialogue/index';
 
 system.afterEvents.scriptEventReceive.subscribe(async (event) => {

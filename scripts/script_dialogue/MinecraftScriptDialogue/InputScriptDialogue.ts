@@ -338,7 +338,7 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
     return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, ...elements]);
   }
 
-  protected getShowable(options: ResolvedShowDialogueOptions): Showable<ModalFormResponse> {
+  protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ModalFormResponse> {
     const data = new ModalFormData();
 
     data.title(this.title);
@@ -364,7 +364,7 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
 
   protected async processResponse(
     response: ModalFormResponse,
-    options: ResolvedShowDialogueOptions
+    _options: ResolvedShowDialogueOptions
   ): Promise<InputScriptDialogueResponse<K>> {
     const formValues = response.formValues ?? this.elements.map((_e) => undefined);
 

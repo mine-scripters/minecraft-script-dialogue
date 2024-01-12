@@ -1,7 +1,5 @@
-import { ScriptDialogue } from './ScriptDialogue';
-import { FormCancelationReason, FormRejectReason, MessageFormData, MessageFormResponse } from '@minecraft/server-ui';
-import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
-import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
+import { FormCancelationReason, MessageFormResponse } from '@minecraft/server-ui';
+import { ButtonDialogueResponse, DialogueCanceledResponse } from './ScriptDialogue';
 import { mockPlayer } from '../test/server-utils';
 import { dualButtonScriptDialogue } from './DualButtonScriptDialogue';
 

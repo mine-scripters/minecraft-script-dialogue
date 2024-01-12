@@ -87,7 +87,7 @@ export class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<B
     return new DualButtonScriptDialogue(this.title, body, this.topButton, this.bottomButton);
   }
 
-  protected getShowable(options: ResolvedShowDialogueOptions): Showable<MessageFormResponse> {
+  protected getShowable(_options: ResolvedShowDialogueOptions): Showable<MessageFormResponse> {
     const data = new MessageFormData();
     data.title(this.title);
     if (this.body) {
@@ -100,7 +100,7 @@ export class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<B
     return data;
   }
 
-  protected async processResponse(response: MessageFormResponse, options: ResolvedShowDialogueOptions) {
+  protected async processResponse(response: MessageFormResponse, _options: ResolvedShowDialogueOptions) {
     const selectedButton = response.selection === 0 ? this.bottomButton : this.topButton;
     if (selectedButton.callback) {
       await selectedButton.callback(selectedButton.name);

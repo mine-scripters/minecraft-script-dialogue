@@ -3,7 +3,6 @@ import { FormCancelationReason, FormRejectReason, MessageFormData, MessageFormRe
 import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
 import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
-import { asyncWait } from './Utils';
 
 const createDualButtonScriptDialogue = () => {
   return dualButtonScriptDialogue(
@@ -117,7 +116,7 @@ describe('DualButtonScriptDialogue', () => {
       canceled: false,
     });
 
-    const response = await dualButtonScriptDialogue(
+    await dualButtonScriptDialogue(
       'my.title',
       {
         name: 'my-top-button',
@@ -142,7 +141,7 @@ describe('DualButtonScriptDialogue', () => {
       canceled: false,
     });
 
-    const response = await dualButtonScriptDialogue(
+    await dualButtonScriptDialogue(
       'my.title',
       {
         name: 'my-top-button',
