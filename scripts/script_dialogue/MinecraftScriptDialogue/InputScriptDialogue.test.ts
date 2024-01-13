@@ -1,6 +1,11 @@
-import { FormCancelationReason, FormRejectReason, ModalFormData, ModalFormResponse } from '@minecraft/server-ui';
+import {
+  FormCancelationReason,
+  FormRejectReason,
+  ModalFormData,
+  ModalFormResponse,
+  FormRejectError,
+} from '@minecraft/server-ui';
 import { DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
-import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
 import {
   inputDropdown,
@@ -10,6 +15,7 @@ import {
   inputText,
   inputToggle,
 } from './InputScriptDialogue';
+import { newMockedInstance } from '../test/mock-helpers';
 
 const TITLE = 'my.title';
 
@@ -165,13 +171,13 @@ describe('InputScriptDialogue', () => {
   it('Test rejected dialogue', async () => {
     const player = mockPlayer();
     jest.mocked<() => ModalFormResponse>(ModalFormResponse as any).mockImplementation(() => {
-      throw new FormRejectError();
+      throw newMockedInstance(FormRejectError);
     });
 
     const response = await createInputScriptDialogue().open({ player });
 
     expect(ModalFormData).toHaveBeenCalledTimes(1);
     expect(response).toBeInstanceOf(DialogueRejectedResponse);
-    expect((response as DialogueCanceledResponse).reason).toBe(FormRejectReason.MalformedResponse);
+    expect((response as DialogueRejectedResponse).reason).toBe(FormRejectReason.MalformedResponse);
   });
 });

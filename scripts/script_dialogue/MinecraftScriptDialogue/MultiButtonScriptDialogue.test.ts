@@ -1,8 +1,14 @@
 import { multiButtonScriptDialogue } from './MultiButtonScriptDialogue';
-import { ActionFormData, ActionFormResponse, FormCancelationReason, FormRejectReason } from '@minecraft/server-ui';
+import {
+  ActionFormData,
+  ActionFormResponse,
+  FormCancelationReason,
+  FormRejectReason,
+  FormRejectError,
+} from '@minecraft/server-ui';
 import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
-import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
+import { newMockedInstance } from '../test/mock-helpers';
 
 const TITLE = 'my.title';
 const BODY = 'hello-world';
@@ -26,7 +32,7 @@ const createMultiButtonScriptDialogue = () => {
 };
 
 describe('MultiButtonScriptDialogue', () => {
-  it('Title, 2 button and no body ', async () => {
+  it('Title, 2 button and no body', async () => {
     const player = mockPlayer();
 
     await createMultiButtonScriptDialogue().open({ player });
@@ -157,7 +163,7 @@ describe('MultiButtonScriptDialogue', () => {
   it('Test rejected dialogue', async () => {
     const player = mockPlayer();
     jest.mocked<() => ActionFormResponse>(ActionFormResponse as any).mockImplementation(() => {
-      throw new FormRejectError();
+      throw newMockedInstance(FormRejectError);
     });
 
     const response = await createMultiButtonScriptDialogue().open({ player });
@@ -167,7 +173,7 @@ describe('MultiButtonScriptDialogue', () => {
     expect((response as DialogueCanceledResponse).reason).toBe(FormRejectReason.MalformedResponse);
   });
 
-  it.only('call callback on button press', async () => {
+  it('call callback on button press', async () => {
     const player = mockPlayer();
     const callback = jest.fn();
 
