@@ -6,7 +6,12 @@ import {
   FormRejectReason,
   FormRejectError,
 } from '@minecraft/server-ui';
-import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
+import {
+  ButtonDialogueResponse,
+  DialogueCanceledResponse,
+  DialogueRejectedResponse,
+  MissingButtonsException,
+} from './ScriptDialogue';
 import { mockPlayer } from '../test/server-utils';
 import { newMockedInstance } from '../test/mock-helpers';
 
@@ -205,5 +210,20 @@ describe('MultiButtonScriptDialogue', () => {
       .open({ player });
 
     expect(callback).not.toHaveBeenCalled();
+  });
+
+  it('Without buttons its rejected', async () => {
+    const player = mockPlayer();
+    const response = await multiButtonScriptDialogue('hello world').open({ player });
+
+    expect(response).toBeInstanceOf(DialogueRejectedResponse);
+    expect((response as DialogueRejectedResponse).reason).toBe(undefined);
+    expect((response as DialogueRejectedResponse).exception).toBeInstanceOf(MissingButtonsException);
+
+    expect(player.runCommand).toHaveBeenCalledTimes(4);
+    expect(player.runCommand).toHaveBeenNthCalledWith(1, 'inputpermission set Steve camera disabled');
+    expect(player.runCommand).toHaveBeenNthCalledWith(2, `inputpermission set Steve movement disabled`);
+    expect(player.runCommand).toHaveBeenNthCalledWith(3, `inputpermission set Steve camera enabled`);
+    expect(player.runCommand).toHaveBeenNthCalledWith(4, `inputpermission set Steve movement enabled`);
   });
 });

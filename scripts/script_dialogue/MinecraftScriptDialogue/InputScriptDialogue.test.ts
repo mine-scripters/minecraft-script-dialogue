@@ -14,6 +14,7 @@ import {
   inputSlider,
   inputText,
   inputToggle,
+  MissingElementsError,
 } from './InputScriptDialogue';
 import { newMockedInstance } from '../test/mock-helpers';
 
@@ -179,5 +180,14 @@ describe('InputScriptDialogue', () => {
     expect(ModalFormData).toHaveBeenCalledTimes(1);
     expect(response).toBeInstanceOf(DialogueRejectedResponse);
     expect((response as DialogueRejectedResponse).reason).toBe(FormRejectReason.MalformedResponse);
+  });
+
+  it('Test rejected dialogue without elements', async () => {
+    const player = mockPlayer();
+    const response = await inputScriptDialogue('my dialogue').open({ player });
+
+    expect(response).toBeInstanceOf(DialogueRejectedResponse);
+    expect((response as DialogueRejectedResponse).reason).toBe(undefined);
+    expect((response as DialogueRejectedResponse).exception).toBeInstanceOf(MissingElementsError);
   });
 });

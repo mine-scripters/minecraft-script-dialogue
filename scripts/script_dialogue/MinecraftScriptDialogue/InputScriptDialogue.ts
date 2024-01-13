@@ -339,6 +339,10 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
   }
 
   protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ModalFormResponse> {
+    if (this.elements.length === 0) {
+      throw new MissingElementsError();
+    }
+
     const data = new ModalFormData();
 
     data.title(this.title);
@@ -421,5 +425,11 @@ export class InputScriptDialogueResponse<K extends string> {
 
   constructor(values: InputScriptDialogueResponseValues<K>) {
     this.values = values;
+  }
+}
+
+export class MissingElementsError extends Error {
+  constructor() {
+    super('Missing input elements');
   }
 }

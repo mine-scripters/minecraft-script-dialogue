@@ -10,7 +10,7 @@ import {
   inputSlider,
   inputText,
   inputToggle,
-} from './MinecraftScriptDialogue/index';
+} from './MinecraftScriptDialogue';
 
 system.afterEvents.scriptEventReceive.subscribe(async (event) => {
   if (event.id === 'minescripters:test-script-dialogue-01' && event.sourceEntity instanceof Player) {
