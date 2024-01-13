@@ -1,9 +1,4 @@
-import {
-  FormCancelationReason,
-  FormRejectReason,
-  ModalFormData,
-  ModalFormResponse,
-} from '@minecraft/server-ui';
+import { FormCancelationReason, FormRejectReason, ModalFormData, ModalFormResponse } from '@minecraft/server-ui';
 import { DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
 import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
