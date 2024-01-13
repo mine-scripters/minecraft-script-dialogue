@@ -1,9 +1,14 @@
 import { dualButtonScriptDialogue } from './DualButtonScriptDialogue';
-import { FormCancelationReason, FormRejectReason, MessageFormData, MessageFormResponse } from '@minecraft/server-ui';
+import {
+  FormCancelationReason,
+  FormRejectReason,
+  MessageFormData,
+  MessageFormResponse,
+  FormRejectError,
+} from '@minecraft/server-ui';
 import { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
-import { FormRejectError } from '../../../__mocks__/@minecraft/server-ui';
 import { mockPlayer } from '../test/server-utils';
-import { asyncWait } from './Utils';
+import { newMockedInstance } from '../test/mock-helpers';
 
 const createDualButtonScriptDialogue = () => {
   return dualButtonScriptDialogue(
@@ -98,7 +103,7 @@ describe('DualButtonScriptDialogue', () => {
   it('Test rejected dialogue', async () => {
     const player = mockPlayer();
     jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockImplementation(() => {
-      throw new FormRejectError();
+      throw newMockedInstance(FormRejectError);
     });
 
     const response = await createDualButtonScriptDialogue().open({ player });
@@ -117,7 +122,7 @@ describe('DualButtonScriptDialogue', () => {
       canceled: false,
     });
 
-    const response = await dualButtonScriptDialogue(
+    await dualButtonScriptDialogue(
       'my.title',
       {
         name: 'my-top-button',
@@ -142,7 +147,7 @@ describe('DualButtonScriptDialogue', () => {
       canceled: false,
     });
 
-    const response = await dualButtonScriptDialogue(
+    await dualButtonScriptDialogue(
       'my.title',
       {
         name: 'my-top-button',

@@ -1,5 +1,5 @@
 import { Player, RawMessage } from '@minecraft/server';
-import { FormCancelationReason, FormRejectReason, FormResponse } from '@minecraft/server-ui';
+import { FormCancelationReason, FormRejectReason, FormResponse, FormRejectError } from '@minecraft/server-ui';
 import { asyncWait } from './Utils';
 
 export interface Showable<T> {
@@ -90,9 +90,8 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
 
         return await this.processResponse(response, resolvedOptions);
       } catch (e) {
-        if (e && typeof e === 'object' && 'reason' in e) {
-          const exception = e as any;
-          return new DialogueRejectedResponse(exception.reason, exception);
+        if (e && e instanceof FormRejectError) {
+          return new DialogueRejectedResponse(e.reason, e);
         } else {
           return new DialogueRejectedResponse(undefined, e);
         }
@@ -106,7 +105,7 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
 
   private async show<T extends FormResponse>(showable: Showable<T>, options: ResolvedShowDialogueOptions): Promise<T> {
     let i = 0;
-    while (true) {
+    for (;;) {
       const response = await showable.show(options.player);
       if (response.canceled && response.cancelationReason === FormCancelationReason.UserBusy) {
         if (i < options.busyRetriesCount) {
