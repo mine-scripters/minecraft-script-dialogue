@@ -7,6 +7,7 @@ export {
   inputDropdown,
   inputScriptDialogue,
   InputScriptDialogueResponse,
+  MissingElementsError,
 } from './InputScriptDialogue';
 export {
   ButtonDialogueResponse,
@@ -16,6 +17,7 @@ export {
   DialogueRejectedResponse,
   ShowDialogueOptions,
   ScriptDialogueString,
+  MissingButtonsException,
 } from './ScriptDialogue';
 export { TRANSLATE } from './Utils';
 

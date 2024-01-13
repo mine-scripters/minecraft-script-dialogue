@@ -1,6 +1,7 @@
 import { ActionFormData, ActionFormResponse } from '@minecraft/server-ui';
 import {
   ButtonDialogueResponse,
+  MissingButtonsException,
   ResolvedShowDialogueOptions,
   ScriptDialogue,
   ScriptDialogueString,
@@ -111,6 +112,10 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
   }
 
   protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ActionFormResponse> {
+    if (this.buttons.length === 0) {
+      throw new MissingButtonsException();
+    }
+
     const formData = new ActionFormData();
 
     formData.title(this.title);

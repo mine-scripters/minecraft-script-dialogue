@@ -230,3 +230,9 @@ export class ButtonDialogueResponse<T extends string> extends ScriptDialogueResp
     this.selected = selected;
   }
 }
+
+export class MissingButtonsException extends Error {
+  constructor() {
+    super('Missing buttons');
+  }
+}
