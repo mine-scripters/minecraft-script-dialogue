@@ -16,6 +16,7 @@ module.exports = {
   },
   "overrides": [
     {
+      extends: ['plugin:jest/recommended', 'prettier'],
       files: [
         "**/*.test.ts"
       ],
