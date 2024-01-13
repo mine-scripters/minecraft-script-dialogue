@@ -141,6 +141,9 @@ declare class ButtonDialogueResponse<T extends string> extends ScriptDialogueRes
      */
     constructor(selected: T);
 }
+declare class MissingButtonsException extends Error {
+    constructor();
+}
 /**
  * Dual button content.
  *
@@ -531,6 +534,9 @@ declare class InputScriptDialogueResponse<K extends string> {
     readonly values: InputScriptDialogueResponseValues<K>;
     constructor(values: InputScriptDialogueResponseValues<K>);
 }
+declare class MissingElementsError extends Error {
+    constructor();
+}
 /**
  * Translation helper to make it easier to define a RawMessage with
  * translated text.
@@ -545,5 +551,5 @@ interface TranslateType {
     (translate: string, ...with_: Array<string>): RawMessage;
 }
 declare const TRANSLATE: TranslateType;
-export { dualButtonScriptDialogue, DualButtonScriptDialogue, multiButtonScriptDialogue, MultiButtonDialogue, inputText, inputToggle, inputSlider, inputDropdown, inputScriptDialogue, InputScriptDialogueResponse, ButtonDialogueResponse, ScriptDialogueResponse, ScriptDialogue, DialogueCanceledResponse, DialogueRejectedResponse, ShowDialogueOptions, ScriptDialogueString, TRANSLATE };
+export { dualButtonScriptDialogue, DualButtonScriptDialogue, multiButtonScriptDialogue, MultiButtonDialogue, inputText, inputToggle, inputSlider, inputDropdown, inputScriptDialogue, InputScriptDialogueResponse, MissingElementsError, ButtonDialogueResponse, ScriptDialogueResponse, ScriptDialogue, DialogueCanceledResponse, DialogueRejectedResponse, ShowDialogueOptions, ScriptDialogueString, MissingButtonsException, TRANSLATE };
 export type { DualButton, MultiButton, InputElement, InputWithDefaultValue, InputText, InputToggle, InputSlider, InputDropdown, InputDropdownOption, InputScriptDialogue, InputValue, InputScriptDialogueResponseValues };

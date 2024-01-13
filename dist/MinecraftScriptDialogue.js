@@ -213,6 +213,11 @@ class ButtonDialogueResponse extends ScriptDialogueResponse {
         this.selected = selected;
     }
 }
+class MissingButtonsException extends Error {
+    constructor() {
+        super('Missing buttons');
+    }
+}
 
 /**
  * Creates a new dual button script dialogue
@@ -344,6 +349,9 @@ class MultiButtonDialogue extends ScriptDialogue {
         ]);
     }
     getShowable(_options) {
+        if (this.buttons.length === 0) {
+            throw new MissingButtonsException();
+        }
         const formData = new ActionFormData();
         formData.title(this.title);
         if (this.body) {
@@ -641,6 +649,9 @@ class InputScriptDialogue extends ScriptDialogue {
         return new InputScriptDialogue(this.title, [...this.elements, ...elements]);
     }
     getShowable(_options) {
+        if (this.elements.length === 0) {
+            throw new MissingElementsError();
+        }
         const data = new ModalFormData();
         data.title(this.title);
         this.elements.forEach((element) => {
@@ -702,5 +713,10 @@ class InputScriptDialogueResponse {
         this.values = values;
     }
 }
+class MissingElementsError extends Error {
+    constructor() {
+        super('Missing input elements');
+    }
+}
 
-export { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse, DualButtonScriptDialogue, InputScriptDialogueResponse, MultiButtonDialogue, ScriptDialogue, ScriptDialogueResponse, TRANSLATE, dualButtonScriptDialogue, inputDropdown, inputScriptDialogue, inputSlider, inputText, inputToggle, multiButtonScriptDialogue };
+export { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse, DualButtonScriptDialogue, InputScriptDialogueResponse, MissingButtonsException, MissingElementsError, MultiButtonDialogue, ScriptDialogue, ScriptDialogueResponse, TRANSLATE, dualButtonScriptDialogue, inputDropdown, inputScriptDialogue, inputSlider, inputText, inputToggle, multiButtonScriptDialogue };
