@@ -1,4 +1,4 @@
-import { FormCancelationReason, MessageFormData, ActionFormData, ModalFormData } from '@minecraft/server-ui';
+import { FormRejectError, FormCancelationReason, MessageFormData, ActionFormData, ModalFormData } from '@minecraft/server-ui';
 import { system } from '@minecraft/server';
 
 const asyncWait = async (ticks) => {
@@ -85,9 +85,8 @@ class ScriptDialogue {
                 return await this.processResponse(response, resolvedOptions);
             }
             catch (e) {
-                if (e && typeof e === 'object' && 'reason' in e) {
-                    const exception = e;
-                    return new DialogueRejectedResponse(exception.reason, exception);
+                if (e && e instanceof FormRejectError) {
+                    return new DialogueRejectedResponse(e.reason, e);
                 }
                 else {
                     return new DialogueRejectedResponse(undefined, e);
@@ -102,7 +101,7 @@ class ScriptDialogue {
     }
     async show(showable, options) {
         let i = 0;
-        while (true) {
+        for (;;) {
             const response = await showable.show(options.player);
             if (response.canceled && response.cancelationReason === FormCancelationReason.UserBusy) {
                 if (i < options.busyRetriesCount) {
@@ -258,7 +257,7 @@ class DualButtonScriptDialogue extends ScriptDialogue {
     setBody(body) {
         return new DualButtonScriptDialogue(this.title, body, this.topButton, this.bottomButton);
     }
-    getShowable(options) {
+    getShowable(_options) {
         const data = new MessageFormData();
         data.title(this.title);
         if (this.body) {
@@ -268,7 +267,7 @@ class DualButtonScriptDialogue extends ScriptDialogue {
         data.button2(this.topButton.text);
         return data;
     }
-    async processResponse(response, options) {
+    async processResponse(response, _options) {
         const selectedButton = response.selection === 0 ? this.bottomButton : this.topButton;
         if (selectedButton.callback) {
             await selectedButton.callback(selectedButton.name);
@@ -344,7 +343,7 @@ class MultiButtonDialogue extends ScriptDialogue {
             ...buttons,
         ]);
     }
-    getShowable(options) {
+    getShowable(_options) {
         const formData = new ActionFormData();
         formData.title(this.title);
         if (this.body) {
@@ -355,7 +354,7 @@ class MultiButtonDialogue extends ScriptDialogue {
         });
         return formData;
     }
-    async processResponse(response, options) {
+    async processResponse(response, _options) {
         const selectedButton = this.buttons[response.selection];
         if (selectedButton.callback) {
             await selectedButton.callback(selectedButton.name);
@@ -641,7 +640,7 @@ class InputScriptDialogue extends ScriptDialogue {
     addElements(elements) {
         return new InputScriptDialogue(this.title, [...this.elements, ...elements]);
     }
-    getShowable(options) {
+    getShowable(_options) {
         const data = new ModalFormData();
         data.title(this.title);
         this.elements.forEach((element) => {
@@ -660,7 +659,7 @@ class InputScriptDialogue extends ScriptDialogue {
         });
         return data;
     }
-    async processResponse(response, options) {
+    async processResponse(response, _options) {
         const formValues = response.formValues ?? this.elements.map((_e) => undefined);
         const values = this.elements.map((element, index) => {
             const name = element.name;

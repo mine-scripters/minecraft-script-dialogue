@@ -196,8 +196,8 @@ declare class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<
      * @param body
      */
     setBody(body: ScriptDialogueString): DualButtonScriptDialogue<T>;
-    protected getShowable(options: ResolvedShowDialogueOptions): Showable<MessageFormResponse>;
-    protected processResponse(response: MessageFormResponse, options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T>>;
+    protected getShowable(_options: ResolvedShowDialogueOptions): Showable<MessageFormResponse>;
+    protected processResponse(response: MessageFormResponse, _options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T>>;
 }
 /**
  * Initializes a empty multi button script dialogue.
@@ -266,8 +266,8 @@ declare class MultiButtonDialogue<T extends string> extends ScriptDialogue<Butto
      * @param buttons array of buttons
      */
     addButtons<NAMES extends string>(buttons: Array<MultiButton<NAMES>>): MultiButtonDialogue<NonNullable<T | NAMES>>;
-    protected getShowable(options: ResolvedShowDialogueOptions): Showable<ActionFormResponse>;
-    protected processResponse(response: ActionFormResponse, options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T>>;
+    protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ActionFormResponse>;
+    protected processResponse(response: ActionFormResponse, _options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T>>;
 }
 /**
  * Type for each input's value.
@@ -507,8 +507,8 @@ declare class InputScriptDialogue<K extends string> extends ScriptDialogue<Input
      * @see {@link inputText}
      */
     addElements<KEY extends string>(elements: Array<InputElement<KEY>>): InputScriptDialogue<K | KEY>;
-    protected getShowable(options: ResolvedShowDialogueOptions): Showable<ModalFormResponse>;
-    protected processResponse(response: ModalFormResponse, options: ResolvedShowDialogueOptions): Promise<InputScriptDialogueResponse<K>>;
+    protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ModalFormResponse>;
+    protected processResponse(response: ModalFormResponse, _options: ResolvedShowDialogueOptions): Promise<InputScriptDialogueResponse<K>>;
 }
 /**
  * Dialogue response values, each value is indexed by the name of the button.
