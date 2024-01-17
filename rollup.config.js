@@ -7,15 +7,12 @@ module.exports = [
     output: {
       file: 'dist/MinecraftScriptDialogue.js',
       format: 'es',
+      sourcemap: true
     },
     plugins: [
       ts({
         tsconfig: (resolvedOptions) => ({
           ...resolvedOptions,
-          compilerOptions: {
-            ...resolvedOptions.compilerOptions,
-            declaration: true,
-          },
         }),
       }),
     ],
