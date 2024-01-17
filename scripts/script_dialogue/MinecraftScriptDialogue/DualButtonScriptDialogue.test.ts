@@ -69,7 +69,7 @@ describe('DualButtonScriptDialogue', () => {
 
     expect(MessageFormData).toHaveBeenCalledTimes(1);
     expect(response).toBeInstanceOf(ButtonDialogueResponse);
-    expect((response as ButtonDialogueResponse<string>).selected).toBe('my-bottom-button');
+    expect((response as any).selected).toBe('my-bottom-button');
   });
 
   it('Button 1 gets the top button', async () => {
@@ -83,7 +83,7 @@ describe('DualButtonScriptDialogue', () => {
 
     expect(MessageFormData).toHaveBeenCalledTimes(1);
     expect(response).toBeInstanceOf(ButtonDialogueResponse);
-    expect((response as ButtonDialogueResponse<string>).selected).toBe('my-top-button');
+    expect((response as any).selected).toBe('my-top-button');
   });
 
   it('Test canceled dialogue', async () => {
@@ -136,6 +136,102 @@ describe('DualButtonScriptDialogue', () => {
     ).open({ player });
 
     expect(callback).toHaveBeenCalledWith('my-top-button');
+  });
+
+  it('Callback can return a value', async () => {
+    const player = mockPlayer();
+    const callback = jest.fn(async () => {
+      return {
+        foobar: 123,
+        stuff: 'yes!',
+      };
+    });
+
+    jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockReturnValue({
+      selection: 1,
+      canceled: false,
+    });
+
+    const response = await dualButtonScriptDialogue(
+      'my.title',
+      {
+        name: 'my-top-button',
+        text: 'my.top.button.text',
+        callback: callback,
+      },
+      {
+        name: 'my-bottom-button',
+        text: 'my.bottom.button.text',
+      }
+    ).open({ player });
+
+    expect(callback).toHaveBeenCalledWith('my-top-button');
+    expect(response).toBeInstanceOf(ButtonDialogueResponse);
+    expect((response as any).callback).toEqual({
+      foobar: 123,
+      stuff: 'yes!',
+    });
+  });
+
+  it('Support nested callbacks', async () => {
+    const player = mockPlayer();
+    const nestedCallback = jest.fn(async () => {
+      return {
+        nested: 'nested',
+        no: 'yes!!!!',
+      };
+    });
+
+    const callback = jest.fn(async () => {
+      const response = await dualButtonScriptDialogue(
+        'my nested title',
+        {
+          name: 'my-top-button',
+          text: 'my.top.button.text',
+          callback: nestedCallback,
+        },
+        {
+          name: 'my-bottom-button',
+          text: 'my.bottom.button.text',
+        }
+      ).open({ player });
+
+      if (response instanceof ButtonDialogueResponse) {
+        return {
+          ...response.callback,
+          augmenting: 'why not?',
+        };
+      }
+
+      return 'whoops';
+    });
+
+    jest.mocked<() => MessageFormResponse>(MessageFormResponse as any).mockReturnValue({
+      selection: 1,
+      canceled: false,
+    });
+
+    const response = await dualButtonScriptDialogue(
+      'my.title',
+      {
+        name: 'my-top-button',
+        text: 'my.top.button.text',
+        callback: callback,
+      },
+      {
+        name: 'my-bottom-button',
+        text: 'my.bottom.button.text',
+      }
+    ).open({ player });
+
+    expect(nestedCallback).toHaveBeenCalledWith('my-top-button');
+    expect(callback).toHaveBeenCalledWith('my-top-button');
+    expect(response).toBeInstanceOf(ButtonDialogueResponse);
+    expect((response as any).callback).toEqual({
+      nested: 'nested',
+      no: 'yes!!!!',
+      augmenting: 'why not?',
+    });
   });
 
   it('does not call others callback on button press', async () => {
