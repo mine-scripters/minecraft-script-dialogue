@@ -1,5 +1,9 @@
 # Minecraft Script Dialogue
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/mine-scripters/minecraft-script-dialogue/build.yml)
+![NPM Version](https://img.shields.io/npm/v/%40mine-scripters%2Fminecraft-script-dialogue)
+[![codecov](https://codecov.io/gh/mine-scripters/minecraft-script-dialogue/graph/badge.svg?token=A62QF0RWNI)](https://codecov.io/gh/mine-scripters/minecraft-script-dialogue)
+
 Minecraft Script Dialogue is a library designed to enhance the usage of
 [@minecraft/server-ui](https://www.npmjs.com/package/@minecraft/server-ui)
 by offering a more convenient API.
