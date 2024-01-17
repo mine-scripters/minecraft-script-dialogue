@@ -720,3 +720,4 @@ class MissingElementsError extends Error {
 }
 
 export { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse, DualButtonScriptDialogue, InputScriptDialogueResponse, MissingButtonsException, MissingElementsError, MultiButtonDialogue, ScriptDialogue, ScriptDialogueResponse, TRANSLATE, dualButtonScriptDialogue, inputDropdown, inputScriptDialogue, inputSlider, inputText, inputToggle, multiButtonScriptDialogue };
+//# sourceMappingURL=MinecraftScriptDialogue.js.map
