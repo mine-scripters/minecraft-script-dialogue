@@ -205,12 +205,14 @@ class ButtonDialogueResponse extends ScriptDialogueResponse {
      * @see {@link MultiButton#name}
      */
     selected;
+    callback;
     /**
      * @internal
      */
-    constructor(selected) {
+    constructor(selected, callback) {
         super();
         this.selected = selected;
+        this.callback = callback;
     }
 }
 class MissingButtonsException extends Error {
@@ -274,10 +276,11 @@ class DualButtonScriptDialogue extends ScriptDialogue {
     }
     async processResponse(response, _options) {
         const selectedButton = response.selection === 0 ? this.bottomButton : this.topButton;
+        let callbackResponse = undefined;
         if (selectedButton.callback) {
-            await selectedButton.callback(selectedButton.name);
+            callbackResponse = await selectedButton.callback(selectedButton.name);
         }
-        return new ButtonDialogueResponse(selectedButton.name);
+        return new ButtonDialogueResponse(selectedButton.name, callbackResponse);
     }
 }
 
@@ -364,10 +367,11 @@ class MultiButtonDialogue extends ScriptDialogue {
     }
     async processResponse(response, _options) {
         const selectedButton = this.buttons[response.selection];
+        let callbackResponse = undefined;
         if (selectedButton.callback) {
-            await selectedButton.callback(selectedButton.name);
+            callbackResponse = await selectedButton.callback(selectedButton.name);
         }
-        return new ButtonDialogueResponse(selectedButton.name);
+        return new ButtonDialogueResponse(selectedButton.name, callbackResponse);
     }
 }
 

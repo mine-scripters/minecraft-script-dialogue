@@ -128,7 +128,7 @@ declare class DialogueRejectedResponse extends ScriptDialogueResponse {
  * @category Dual button script dialogue
  * @category Multi button script dialogue
  */
-declare class ButtonDialogueResponse<T extends string> extends ScriptDialogueResponse {
+declare class ButtonDialogueResponse<T extends string, CallbackResponse> extends ScriptDialogueResponse {
     /**
      * Selected button's name.
      *
@@ -136,10 +136,11 @@ declare class ButtonDialogueResponse<T extends string> extends ScriptDialogueRes
      * @see {@link MultiButton#name}
      */
     readonly selected: T;
+    readonly callback?: CallbackResponse;
     /**
      * @internal
      */
-    constructor(selected: T);
+    constructor(selected: T, callback?: CallbackResponse);
 }
 declare class MissingButtonsException extends Error {
     constructor();
@@ -150,7 +151,7 @@ declare class MissingButtonsException extends Error {
  * Note that dual buttons do not allow an icon to be used
  * @category Dual button script dialogue
  */
-interface DualButton<T extends string> {
+interface DualButton<T extends string, CallbackResponse> {
     /**
      * Name used by the button, response is recorded using this name
      */
@@ -164,7 +165,7 @@ interface DualButton<T extends string> {
      * This function is executed before returning from {@link DualButtonScriptDialogue#open}.
      * @param selected
      */
-    callback?: (selected: string) => Promise<void>;
+    callback?: (selected: string) => Promise<CallbackResponse>;
 }
 /**
  * Creates a new dual button script dialogue
@@ -175,7 +176,7 @@ interface DualButton<T extends string> {
  * @param topButton Contents of the top button
  * @param bottomButton Contents of the bottom button
  */
-declare const dualButtonScriptDialogue: <T extends string>(title: ScriptDialogueString, topButton: DualButton<T>, bottomButton: DualButton<T>) => DualButtonScriptDialogue<T>;
+declare const dualButtonScriptDialogue: <T extends string, TopCallbackResponse = undefined, BottomCallbackResponse = undefined>(title: ScriptDialogueString, topButton: DualButton<T, TopCallbackResponse>, bottomButton: DualButton<T, BottomCallbackResponse>) => DualButtonScriptDialogue<T, TopCallbackResponse, BottomCallbackResponse>;
 /**
  * Dual button script dialogue class.
  *
@@ -185,7 +186,7 @@ declare const dualButtonScriptDialogue: <T extends string>(title: ScriptDialogue
  *
  * @category Dual button script dialogue
  */
-declare class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<ButtonDialogueResponse<T>> {
+declare class DualButtonScriptDialogue<T extends string, TopCallbackResponse, BottomCallbackResponse> extends ScriptDialogue<ButtonDialogueResponse<T, TopCallbackResponse | BottomCallbackResponse>> {
     private readonly title;
     private readonly body?;
     private readonly topButton;
@@ -193,14 +194,14 @@ declare class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<
     /**
      * @internal
      */
-    constructor(title: ScriptDialogueString, body: ScriptDialogueString | undefined, topButton: DualButton<T>, bottomButton: DualButton<T>);
+    constructor(title: ScriptDialogueString, body: ScriptDialogueString | undefined, topButton: DualButton<T, TopCallbackResponse>, bottomButton: DualButton<T, BottomCallbackResponse>);
     /**
      * Sets content of the script dialogue
      * @param body
      */
-    setBody(body: ScriptDialogueString): DualButtonScriptDialogue<T>;
+    setBody(body: ScriptDialogueString): DualButtonScriptDialogue<T, TopCallbackResponse, BottomCallbackResponse>;
     protected getShowable(_options: ResolvedShowDialogueOptions): Showable<MessageFormResponse>;
-    protected processResponse(response: MessageFormResponse, _options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T>>;
+    protected processResponse(response: MessageFormResponse, _options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T, TopCallbackResponse | BottomCallbackResponse>>;
 }
 /**
  * Initializes a empty multi button script dialogue.
@@ -211,12 +212,12 @@ declare class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<
  * @category Multi button script dialogue
  * @param title
  */
-declare const multiButtonScriptDialogue: (title: ScriptDialogueString) => MultiButtonDialogue<never>;
+declare const multiButtonScriptDialogue: (title: ScriptDialogueString) => MultiButtonDialogue<never, never>;
 /**
  * Multi button content.
  * @category Multi button script dialogue
  */
-interface MultiButton<T extends string> {
+interface MultiButton<T extends string, Callback> {
     /**
      * Name used by the button, response is recorded using this name
      */
@@ -234,7 +235,7 @@ interface MultiButton<T extends string> {
      * This function is executed before returning from {@link MultiButtonDialogue#open}.
      * @param selected
      */
-    callback?: (selected: string) => Promise<void>;
+    callback?: (selected: string) => Promise<Callback>;
 }
 /**
  * Class used to build multi button script dialogues.
@@ -244,33 +245,33 @@ interface MultiButton<T extends string> {
  * @category Multi button script dialogue
  * @see {@link multiButtonScriptDialogue}
  */
-declare class MultiButtonDialogue<T extends string> extends ScriptDialogue<ButtonDialogueResponse<T>> {
+declare class MultiButtonDialogue<T extends string, Callback = undefined> extends ScriptDialogue<ButtonDialogueResponse<T, Callback>> {
     private readonly title;
     private readonly body?;
     private readonly buttons;
     /**
      * @internal
      */
-    constructor(title: ScriptDialogueString, body: ScriptDialogueString | undefined, buttons: Array<MultiButton<T>>);
+    constructor(title: ScriptDialogueString, body: ScriptDialogueString | undefined, buttons: Array<MultiButton<T, Callback>>);
     /**
      * Sets the content body of the multi button dialogue
      * @param body
      */
-    setBody(body: ScriptDialogueString): MultiButtonDialogue<T>;
+    setBody(body: ScriptDialogueString): MultiButtonDialogue<T, Callback>;
     /**
      * Adds a button to the multi button script dialogue.
      * @param name name of the button
      * @param text content of the button
      * @param iconPath path to an icon to show in the button
      */
-    addButton<NAME extends string>(name: NAME, text: ScriptDialogueString, iconPath?: string, callback?: (selected: string) => Promise<void>): MultiButtonDialogue<NonNullable<T | NAME>>;
+    addButton<NAME extends string, ButtonCallback = undefined>(name: NAME, text: ScriptDialogueString, iconPath?: string, callback?: (selected: string) => Promise<ButtonCallback>): MultiButtonDialogue<NonNullable<T | NAME>, Callback | ButtonCallback>;
     /**
      * Adds multiple buttons to the multi button script dialogue.
      * @param buttons array of buttons
      */
-    addButtons<NAMES extends string>(buttons: Array<MultiButton<NAMES>>): MultiButtonDialogue<NonNullable<T | NAMES>>;
+    addButtons<NAMES extends string, ButtonCallback = undefined>(buttons: Array<MultiButton<NAMES, ButtonCallback>>): MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback>;
     protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ActionFormResponse>;
-    protected processResponse(response: ActionFormResponse, _options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T>>;
+    protected processResponse(response: ActionFormResponse, _options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T, Callback>>;
 }
 /**
  * Type for each input's value.
