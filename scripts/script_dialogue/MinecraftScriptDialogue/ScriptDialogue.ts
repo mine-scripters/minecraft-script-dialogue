@@ -213,7 +213,7 @@ export class DialogueRejectedResponse extends ScriptDialogueResponse {
  * @category Dual button script dialogue
  * @category Multi button script dialogue
  */
-export class ButtonDialogueResponse<T extends string> extends ScriptDialogueResponse {
+export class ButtonDialogueResponse<T extends string, CallbackResponse> extends ScriptDialogueResponse {
   /**
    * Selected button's name.
    *
@@ -222,12 +222,15 @@ export class ButtonDialogueResponse<T extends string> extends ScriptDialogueResp
    */
   readonly selected: T;
 
+  readonly callback?: CallbackResponse;
+
   /**
    * @internal
    */
-  constructor(selected: T) {
+  constructor(selected: T, callback?: CallbackResponse) {
     super();
     this.selected = selected;
+    this.callback = callback;
   }
 }
 

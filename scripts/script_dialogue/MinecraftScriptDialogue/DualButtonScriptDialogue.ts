@@ -13,7 +13,7 @@ import { MessageFormData, MessageFormResponse } from '@minecraft/server-ui';
  * Note that dual buttons do not allow an icon to be used
  * @category Dual button script dialogue
  */
-export interface DualButton<T extends string> {
+export interface DualButton<T extends string, CallbackResponse> {
   /**
    * Name used by the button, response is recorded using this name
    */
@@ -28,7 +28,7 @@ export interface DualButton<T extends string> {
    * This function is executed before returning from {@link DualButtonScriptDialogue#open}.
    * @param selected
    */
-  callback?: (selected: string) => Promise<void>;
+  callback?: (selected: string) => Promise<CallbackResponse>;
 }
 
 /**
@@ -40,10 +40,14 @@ export interface DualButton<T extends string> {
  * @param topButton Contents of the top button
  * @param bottomButton Contents of the bottom button
  */
-export const dualButtonScriptDialogue = <T extends string>(
+export const dualButtonScriptDialogue = <
+  T extends string,
+  TopCallbackResponse = undefined,
+  BottomCallbackResponse = undefined,
+>(
   title: ScriptDialogueString,
-  topButton: DualButton<T>,
-  bottomButton: DualButton<T>
+  topButton: DualButton<T, TopCallbackResponse>,
+  bottomButton: DualButton<T, BottomCallbackResponse>
 ) => {
   return new DualButtonScriptDialogue(title, undefined, topButton, bottomButton);
 };
@@ -57,11 +61,15 @@ export const dualButtonScriptDialogue = <T extends string>(
  *
  * @category Dual button script dialogue
  */
-export class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<ButtonDialogueResponse<T>> {
+export class DualButtonScriptDialogue<
+  T extends string,
+  TopCallbackResponse,
+  BottomCallbackResponse,
+> extends ScriptDialogue<ButtonDialogueResponse<T, TopCallbackResponse | BottomCallbackResponse>> {
   private readonly title: ScriptDialogueString;
   private readonly body?: ScriptDialogueString;
-  private readonly topButton: DualButton<T>;
-  private readonly bottomButton: DualButton<T>;
+  private readonly topButton: DualButton<T, TopCallbackResponse>;
+  private readonly bottomButton: DualButton<T, BottomCallbackResponse>;
 
   /**
    * @internal
@@ -69,8 +77,8 @@ export class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<B
   constructor(
     title: ScriptDialogueString,
     body: ScriptDialogueString | undefined,
-    topButton: DualButton<T>,
-    bottomButton: DualButton<T>
+    topButton: DualButton<T, TopCallbackResponse>,
+    bottomButton: DualButton<T, BottomCallbackResponse>
   ) {
     super();
     this.title = title;
@@ -102,9 +110,10 @@ export class DualButtonScriptDialogue<T extends string> extends ScriptDialogue<B
 
   protected async processResponse(response: MessageFormResponse, _options: ResolvedShowDialogueOptions) {
     const selectedButton = response.selection === 0 ? this.bottomButton : this.topButton;
+    let callbackResponse: TopCallbackResponse | BottomCallbackResponse | undefined = undefined;
     if (selectedButton.callback) {
-      await selectedButton.callback(selectedButton.name);
+      callbackResponse = await selectedButton.callback(selectedButton.name);
     }
-    return new ButtonDialogueResponse(selectedButton.name);
+    return new ButtonDialogueResponse(selectedButton.name, callbackResponse);
   }
 }

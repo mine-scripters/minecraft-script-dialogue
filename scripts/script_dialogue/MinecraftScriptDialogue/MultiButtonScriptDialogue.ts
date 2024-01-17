@@ -17,7 +17,7 @@ import {
  * @category Multi button script dialogue
  * @param title
  */
-export const multiButtonScriptDialogue = (title: ScriptDialogueString): MultiButtonDialogue<never> => {
+export const multiButtonScriptDialogue = (title: ScriptDialogueString): MultiButtonDialogue<never, never> => {
   return new MultiButtonDialogue(title, undefined, []);
 };
 
@@ -25,7 +25,7 @@ export const multiButtonScriptDialogue = (title: ScriptDialogueString): MultiBut
  * Multi button content.
  * @category Multi button script dialogue
  */
-export interface MultiButton<T extends string> {
+export interface MultiButton<T extends string, Callback> {
   /**
    * Name used by the button, response is recorded using this name
    */
@@ -43,7 +43,7 @@ export interface MultiButton<T extends string> {
    * This function is executed before returning from {@link MultiButtonDialogue#open}.
    * @param selected
    */
-  callback?: (selected: string) => Promise<void>;
+  callback?: (selected: string) => Promise<Callback>;
 }
 
 /**
@@ -54,15 +54,21 @@ export interface MultiButton<T extends string> {
  * @category Multi button script dialogue
  * @see {@link multiButtonScriptDialogue}
  */
-export class MultiButtonDialogue<T extends string> extends ScriptDialogue<ButtonDialogueResponse<T>> {
+export class MultiButtonDialogue<T extends string, Callback = undefined> extends ScriptDialogue<
+  ButtonDialogueResponse<T, Callback>
+> {
   private readonly title: ScriptDialogueString;
   private readonly body?: ScriptDialogueString;
-  private readonly buttons: Array<MultiButton<T>>;
+  private readonly buttons: Array<MultiButton<T, Callback>>;
 
   /**
    * @internal
    */
-  constructor(title: ScriptDialogueString, body: ScriptDialogueString | undefined, buttons: Array<MultiButton<T>>) {
+  constructor(
+    title: ScriptDialogueString,
+    body: ScriptDialogueString | undefined,
+    buttons: Array<MultiButton<T, Callback>>
+  ) {
     super();
     this.title = title;
     this.body = body;
@@ -73,8 +79,8 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
    * Sets the content body of the multi button dialogue
    * @param body
    */
-  setBody(body: ScriptDialogueString): MultiButtonDialogue<T> {
-    return new MultiButtonDialogue<T>(this.title, body, this.buttons);
+  setBody(body: ScriptDialogueString): MultiButtonDialogue<T, Callback> {
+    return new MultiButtonDialogue<T, Callback>(this.title, body, this.buttons);
   }
 
   /**
@@ -83,13 +89,13 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
    * @param text content of the button
    * @param iconPath path to an icon to show in the button
    */
-  addButton<NAME extends string>(
+  addButton<NAME extends string, ButtonCallback = undefined>(
     name: NAME,
     text: ScriptDialogueString,
     iconPath?: string,
-    callback?: (selected: string) => Promise<void>
-  ): MultiButtonDialogue<NonNullable<T | NAME>> {
-    return new MultiButtonDialogue<NonNullable<T | NAME>>(this.title, this.body, [
+    callback?: (selected: string) => Promise<ButtonCallback>
+  ): MultiButtonDialogue<NonNullable<T | NAME>, Callback | ButtonCallback> {
+    return new MultiButtonDialogue<NonNullable<T | NAME>, Callback | ButtonCallback>(this.title, this.body, [
       ...this.buttons,
       {
         name,
@@ -97,18 +103,20 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
         iconPath,
         callback,
       },
-    ]) as MultiButtonDialogue<NonNullable<T | NAME>>;
+    ]) as MultiButtonDialogue<NonNullable<T | NAME>, Callback | ButtonCallback>;
   }
 
   /**
    * Adds multiple buttons to the multi button script dialogue.
    * @param buttons array of buttons
    */
-  addButtons<NAMES extends string>(buttons: Array<MultiButton<NAMES>>): MultiButtonDialogue<NonNullable<T | NAMES>> {
-    return new MultiButtonDialogue<T | NAMES>(this.title, this.body, [
+  addButtons<NAMES extends string, ButtonCallback = undefined>(
+    buttons: Array<MultiButton<NAMES, ButtonCallback>>
+  ): MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback> {
+    return new MultiButtonDialogue<T | NAMES, Callback | ButtonCallback>(this.title, this.body, [
       ...this.buttons,
       ...buttons,
-    ]) as MultiButtonDialogue<NonNullable<T | NAMES>>;
+    ]) as MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback>;
   }
 
   protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ActionFormResponse> {
@@ -134,11 +142,12 @@ export class MultiButtonDialogue<T extends string> extends ScriptDialogue<Button
   protected async processResponse(
     response: ActionFormResponse,
     _options: ResolvedShowDialogueOptions
-  ): Promise<ButtonDialogueResponse<T>> {
+  ): Promise<ButtonDialogueResponse<T, Callback>> {
     const selectedButton = this.buttons[response.selection as number];
+    let callbackResponse: Callback | undefined = undefined;
     if (selectedButton.callback) {
-      await selectedButton.callback(selectedButton.name);
+      callbackResponse = await selectedButton.callback(selectedButton.name);
     }
-    return new ButtonDialogueResponse<T>(selectedButton.name);
+    return new ButtonDialogueResponse<T, Callback>(selectedButton.name, callbackResponse);
   }
 }
