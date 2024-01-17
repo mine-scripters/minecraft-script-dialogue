@@ -7,7 +7,7 @@ module.exports = [
     output: {
       file: 'dist/MinecraftScriptDialogue.js',
       format: 'es',
-      sourcemap: true
+      sourcemap: true,
     },
     plugins: [
       ts({
