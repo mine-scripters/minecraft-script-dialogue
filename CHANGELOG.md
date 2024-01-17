@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.0.0...v1.1.0) (2024-01-17)
+
+
+### Features
+
+* Callback buttons can now return a value ([#22](https://github.com/mine-scripters/minecraft-script-dialogue/issues/22)) ([913dfb7](https://github.com/mine-scripters/minecraft-script-dialogue/commit/913dfb760ed11f1bf6f8a6aa35e7583feda3b6fa))
+
 ## 1.0.0 (2024-01-13)
 
 
