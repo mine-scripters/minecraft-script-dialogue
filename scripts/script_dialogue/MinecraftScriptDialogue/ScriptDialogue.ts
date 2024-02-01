@@ -122,13 +122,13 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
   }
 
   private lockPlayerCamera(options: ResolvedShowDialogueOptions) {
-    options.player.runCommand(`inputpermission set ${options.player.name} camera disabled`);
-    options.player.runCommand(`inputpermission set ${options.player.name} movement disabled`);
+    options.player.runCommand(`inputpermission set "${options.player.name}" camera disabled`);
+    options.player.runCommand(`inputpermission set "${options.player.name}" movement disabled`);
   }
 
   private unlockPlayerCamera(options: ResolvedShowDialogueOptions) {
-    options.player.runCommand(`inputpermission set ${options.player.name} camera enabled`);
-    options.player.runCommand(`inputpermission set ${options.player.name} movement enabled`);
+    options.player.runCommand(`inputpermission set "${options.player.name}" camera enabled`);
+    options.player.runCommand(`inputpermission set "${options.player.name}" movement enabled`);
   }
 
   private resolveShowDialogueOptions(options: ShowDialogueOptions): ResolvedShowDialogueOptions {
