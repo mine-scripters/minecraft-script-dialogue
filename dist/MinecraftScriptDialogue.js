@@ -116,12 +116,12 @@ class ScriptDialogue {
         }
     }
     lockPlayerCamera(options) {
-        options.player.runCommand(`inputpermission set ${options.player.name} camera disabled`);
-        options.player.runCommand(`inputpermission set ${options.player.name} movement disabled`);
+        options.player.runCommand(`inputpermission set "${options.player.name}" camera disabled`);
+        options.player.runCommand(`inputpermission set "${options.player.name}" movement disabled`);
     }
     unlockPlayerCamera(options) {
-        options.player.runCommand(`inputpermission set ${options.player.name} camera enabled`);
-        options.player.runCommand(`inputpermission set ${options.player.name} movement enabled`);
+        options.player.runCommand(`inputpermission set "${options.player.name}" camera enabled`);
+        options.player.runCommand(`inputpermission set "${options.player.name}" movement enabled`);
     }
     resolveShowDialogueOptions(options) {
         return {
