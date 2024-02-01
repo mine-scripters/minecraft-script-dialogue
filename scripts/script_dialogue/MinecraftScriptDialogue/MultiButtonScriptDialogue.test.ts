@@ -293,9 +293,9 @@ describe('MultiButtonScriptDialogue', () => {
     expect((response as DialogueRejectedResponse).exception).toBeInstanceOf(MissingButtonsException);
 
     expect(player.runCommand).toHaveBeenCalledTimes(4);
-    expect(player.runCommand).toHaveBeenNthCalledWith(1, 'inputpermission set Steve camera disabled');
-    expect(player.runCommand).toHaveBeenNthCalledWith(2, `inputpermission set Steve movement disabled`);
-    expect(player.runCommand).toHaveBeenNthCalledWith(3, `inputpermission set Steve camera enabled`);
-    expect(player.runCommand).toHaveBeenNthCalledWith(4, `inputpermission set Steve movement enabled`);
+    expect(player.runCommand).toHaveBeenNthCalledWith(1, 'inputpermission set "Steve" camera disabled');
+    expect(player.runCommand).toHaveBeenNthCalledWith(2, `inputpermission set "Steve" movement disabled`);
+    expect(player.runCommand).toHaveBeenNthCalledWith(3, `inputpermission set "Steve" camera enabled`);
+    expect(player.runCommand).toHaveBeenNthCalledWith(4, `inputpermission set "Steve" movement enabled`);
   });
 });
