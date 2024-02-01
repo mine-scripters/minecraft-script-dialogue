@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.0...v1.1.1) (2024-02-01)
+
+
+### Bug Fixes
+
+* add quotes to players when running lock commands ([7af8632](https://github.com/mine-scripters/minecraft-script-dialogue/commit/7af863292bed62de08d2b8726dd9f86ae3629d29))
+
 ## [1.1.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.0.0...v1.1.0) (2024-01-17)
 
 
