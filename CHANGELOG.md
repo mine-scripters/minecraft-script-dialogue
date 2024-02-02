@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.2...v1.1.3) (2024-02-02)
+
+
+### Bug Fixes
+
+* Adds all the versions to peerdeps to silence warns ([#31](https://github.com/mine-scripters/minecraft-script-dialogue/issues/31)) ([408fca0](https://github.com/mine-scripters/minecraft-script-dialogue/commit/408fca0719fe941e8e9e040c20bdea6b7f51628f))
+
 ## [1.1.2](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.1...v1.1.2) (2024-02-02)
 
 
