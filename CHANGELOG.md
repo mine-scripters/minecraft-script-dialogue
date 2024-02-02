@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.1...v1.1.2) (2024-02-02)
+
+
+### Bug Fixes
+
+* Moved minecraft to peer-dependencies ([#28](https://github.com/mine-scripters/minecraft-script-dialogue/issues/28)) ([36268d9](https://github.com/mine-scripters/minecraft-script-dialogue/commit/36268d9d043a35e42a12686371c2a2c2578c7230))
+
 ## [1.1.1](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.0...v1.1.1) (2024-02-01)
 
 
