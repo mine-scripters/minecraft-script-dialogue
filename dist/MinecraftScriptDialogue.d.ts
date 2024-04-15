@@ -487,6 +487,11 @@ declare class InputToggle<K extends string> extends InputWithDefaultValue<K, boo
 declare class InputScriptDialogue<K extends string> extends ScriptDialogue<InputScriptDialogueResponse<K>> {
     private readonly elements;
     private readonly title;
+    // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
+    private readonly InputDropdown;
+    private readonly InputSlider;
+    private readonly InputText;
+    private readonly InputToggle;
     /**
      * @internal
      */

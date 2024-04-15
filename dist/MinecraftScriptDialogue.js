@@ -14,41 +14,6 @@ const TRANSLATE = (translate, with_, ...with__) => {
         with: typeof with_ === 'string' ? [with_, ...with__] : with_,
     };
 };
-// Use a builder pattern
-// builder pattern: https://medium.com/geekculture/implementing-a-type-safe-object-builder-in-typescript-e973f5ecfb9c
-// Needs updating to support optional types
-// class ObjectBuilder {
-//   public static new<Target>(): IWith<Target, {}> {
-//     return new Builder<Target, {}>({});
-//   }
-// }
-//
-// interface IWith<Target, Supplied> {
-//   with<T extends Omit<Target, keyof Supplied>, K extends keyof T>(
-//     key: K,
-//     value: T[K],
-//   ): keyof Omit<Omit<Target, keyof Supplied>, K> extends never
-//     ? IBuild<Target>
-//     : IWith<Target, Supplied & Pick<T, K>>;
-// }
-//
-// interface IBuild<Target> {
-//   build(): Target;
-// }
-//
-// class Builder<Target, Supplied> implements IBuild<Target>, IWith<Target, Supplied> {
-//   constructor(private target: Partial<Target>) {}
-//
-//   with<T extends Omit<Target, keyof Supplied>, K extends keyof T>(key: K, value: T[K]) {
-//     const target: Partial<Target> = { ...this.target, [key]: value };
-//
-//     return new Builder<Target, Supplied & Pick<T, K>>(target);
-//   }
-//
-//   build() {
-//     return this.target as Target;
-//   }
-// }
 
 const DefaultShowDialogOptions = Object.freeze({
     lockPlayerCamera: true,
@@ -620,6 +585,11 @@ class InputToggle extends InputWithDefaultValue {
 class InputScriptDialogue extends ScriptDialogue {
     elements;
     title;
+    // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
+    InputDropdown = (InputDropdown);
+    InputSlider = (InputSlider);
+    InputText = (InputText);
+    InputToggle = (InputToggle);
     /**
      * @internal
      */
@@ -659,16 +629,16 @@ class InputScriptDialogue extends ScriptDialogue {
         const data = new ModalFormData();
         data.title(this.title);
         this.elements.forEach((element) => {
-            if (element instanceof (InputDropdown)) {
+            if (element instanceof this.InputDropdown) {
                 data.dropdown(element.label, element.options.map((o) => o.label), element.defaultValueIndex);
             }
-            else if (element instanceof (InputSlider)) {
+            else if (element instanceof this.InputSlider) {
                 data.slider(element.label, element.minimumValue, element.maximumValue, element.valueStep, element.defaultValue);
             }
-            else if (element instanceof (InputText)) {
+            else if (element instanceof this.InputText) {
                 data.textField(element.label, element.placeholderText, element.defaultValue);
             }
-            else if (element instanceof (InputToggle)) {
+            else if (element instanceof this.InputToggle) {
                 data.toggle(element.label, element.defaultValue);
             }
         });
@@ -680,15 +650,15 @@ class InputScriptDialogue extends ScriptDialogue {
             const name = element.name;
             let value = 0;
             const formValue = formValues[index];
-            if (element instanceof (InputDropdown)) {
+            if (element instanceof this.InputDropdown) {
                 value = element.options[element.defaultValueIndex].value;
                 if (formValue !== undefined) {
                     value = element.options[formValue].value;
                 }
             }
-            else if (element instanceof (InputSlider) ||
-                element instanceof (InputText) ||
-                element instanceof (InputToggle)) {
+            else if (element instanceof this.InputSlider ||
+                element instanceof this.InputText ||
+                element instanceof this.InputToggle) {
                 value = element.defaultValue;
                 if (formValue !== undefined) {
                     value = formValue;
