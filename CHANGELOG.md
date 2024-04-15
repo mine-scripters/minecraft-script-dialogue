@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.3...v1.1.4) (2024-04-15)
+
+
+### Bug Fixes
+
+* Force release ([8a20ef7](https://github.com/mine-scripters/minecraft-script-dialogue/commit/8a20ef77bcba4e15a29e1a45e499f86d1b2c96bd))
+
 ## [1.1.3](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.2...v1.1.3) (2024-02-02)
 
 
