@@ -303,6 +303,12 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
   private readonly elements: Array<InputElement<K>>;
   private readonly title: ScriptDialogueString;
 
+  // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
+  private readonly InputDropdown = InputDropdown<K>;
+  private readonly InputSlider = InputSlider<K>;
+  private readonly InputText = InputText<K>;
+  private readonly InputToggle = InputToggle<K>;
+
   /**
    * @internal
    */
@@ -348,17 +354,17 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
     data.title(this.title);
 
     this.elements.forEach((element) => {
-      if (element instanceof InputDropdown<K>) {
+      if (element instanceof this.InputDropdown) {
         data.dropdown(
           element.label,
           element.options.map((o) => o.label),
           element.defaultValueIndex
         );
-      } else if (element instanceof InputSlider<K>) {
+      } else if (element instanceof this.InputSlider) {
         data.slider(element.label, element.minimumValue, element.maximumValue, element.valueStep, element.defaultValue);
-      } else if (element instanceof InputText<K>) {
+      } else if (element instanceof this.InputText) {
         data.textField(element.label, element.placeholderText, element.defaultValue);
-      } else if (element instanceof InputToggle<K>) {
+      } else if (element instanceof this.InputToggle) {
         data.toggle(element.label, element.defaultValue);
       }
     });
@@ -377,15 +383,15 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
       let value: InputValue = 0;
       const formValue = formValues[index];
 
-      if (element instanceof InputDropdown<K>) {
+      if (element instanceof this.InputDropdown) {
         value = element.options[element.defaultValueIndex].value;
         if (formValue !== undefined) {
           value = element.options[formValue as number].value;
         }
       } else if (
-        element instanceof InputSlider<K> ||
-        element instanceof InputText<K> ||
-        element instanceof InputToggle<K>
+        element instanceof this.InputSlider ||
+        element instanceof this.InputText ||
+        element instanceof this.InputToggle
       ) {
         value = element.defaultValue;
         if (formValue !== undefined) {
