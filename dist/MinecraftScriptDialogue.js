@@ -8,6 +8,17 @@ const asyncWait = async (ticks) => {
         }, ticks);
     });
 };
+const runUntilSuccess = (target, command, expectedCount, stopIf) => {
+    return new Promise((resolve) => {
+        const handler = system.runInterval(() => {
+            const result = target.runCommand(command);
+            if (result.successCount === expectedCount || stopIf()) {
+                resolve();
+                system.clearRun(handler);
+            }
+        }, 1);
+    });
+};
 const TRANSLATE = (translate, with_, ...with__) => {
     return {
         translate,
@@ -60,7 +71,7 @@ class ScriptDialogue {
         }
         finally {
             if (resolvedOptions.lockPlayerCamera) {
-                this.unlockPlayerCamera(resolvedOptions);
+                await this.unlockPlayerCamera(resolvedOptions);
             }
         }
     }
@@ -84,9 +95,9 @@ class ScriptDialogue {
         options.player.runCommand(`inputpermission set "${options.player.name}" camera disabled`);
         options.player.runCommand(`inputpermission set "${options.player.name}" movement disabled`);
     }
-    unlockPlayerCamera(options) {
-        options.player.runCommand(`inputpermission set "${options.player.name}" camera enabled`);
-        options.player.runCommand(`inputpermission set "${options.player.name}" movement enabled`);
+    async unlockPlayerCamera(options) {
+        await runUntilSuccess(options.player, `inputpermission set "${options.player.name}" camera enabled`, 1, () => !options.player.isValid());
+        await runUntilSuccess(options.player, `inputpermission set "${options.player.name}" movement enabled`, 1, () => !options.player.isValid());
     }
     resolveShowDialogueOptions(options) {
         return {
@@ -630,6 +641,9 @@ class InputScriptDialogue extends ScriptDialogue {
         data.title(this.title);
         this.elements.forEach((element) => {
             if (element instanceof this.InputDropdown) {
+                if (element.options.length === 0) {
+                    throw new MissingDropdownOptionsError(element.name);
+                }
                 data.dropdown(element.label, element.options.map((o) => o.label), element.defaultValueIndex);
             }
             else if (element instanceof this.InputSlider) {
@@ -690,6 +704,11 @@ class InputScriptDialogueResponse {
 class MissingElementsError extends Error {
     constructor() {
         super('Missing input elements');
+    }
+}
+class MissingDropdownOptionsError extends Error {
+    constructor(name) {
+        super(`Missing dropdown options for ${name}`);
     }
 }
 
