@@ -118,5 +118,27 @@ system.afterEvents.scriptEventReceive.subscribe(async (event) => {
         }
       }
     }
+  } else if (event.id === 'minescripters:test-script-dialogue-04') {
+    // Changes to adventure mode - the idea is to be in a place with mobs that can kill you
+    if (event.sourceEntity instanceof Player) {
+      const player = event.sourceEntity;
+      dualButtonScriptDialogue(
+        'Dual button',
+        {
+          name: 'top',
+          text: 'Show input button',
+        },
+        {
+          name: 'bottom',
+          text: 'Cancel',
+        }
+      )
+        .open({
+          player,
+        })
+        .then((e) => event.sourceEntity?.runCommand(`say finished with response: ${JSON.stringify(e)}`));
+
+      event.sourceEntity.runCommand('gamemode adventure');
+    }
   }
 });

@@ -1,6 +1,6 @@
 import { Player, RawMessage } from '@minecraft/server';
 import { FormCancelationReason, FormRejectReason, FormResponse, FormRejectError } from '@minecraft/server-ui';
-import { asyncWait } from './Utils';
+import { asyncWait, runUntilSuccess } from './Utils';
 
 export interface Showable<T> {
   show(player: Player): Promise<T>;
@@ -98,7 +98,7 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
       }
     } finally {
       if (resolvedOptions.lockPlayerCamera) {
-        this.unlockPlayerCamera(resolvedOptions);
+        await this.unlockPlayerCamera(resolvedOptions);
       }
     }
   }
@@ -126,9 +126,19 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
     options.player.runCommand(`inputpermission set "${options.player.name}" movement disabled`);
   }
 
-  private unlockPlayerCamera(options: ResolvedShowDialogueOptions) {
-    options.player.runCommand(`inputpermission set "${options.player.name}" camera enabled`);
-    options.player.runCommand(`inputpermission set "${options.player.name}" movement enabled`);
+  private async unlockPlayerCamera(options: ResolvedShowDialogueOptions) {
+    await runUntilSuccess(
+      options.player,
+      `inputpermission set "${options.player.name}" camera enabled`,
+      1,
+      () => !options.player.isValid()
+    );
+    await runUntilSuccess(
+      options.player,
+      `inputpermission set "${options.player.name}" movement enabled`,
+      1,
+      () => !options.player.isValid()
+    );
   }
 
   private resolveShowDialogueOptions(options: ShowDialogueOptions): ResolvedShowDialogueOptions {
