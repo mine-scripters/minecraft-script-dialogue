@@ -355,6 +355,10 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
 
     this.elements.forEach((element) => {
       if (element instanceof this.InputDropdown) {
+        if (element.options.length === 0) {
+          throw new MissingDropdownOptionsError(element.name);
+        }
+
         data.dropdown(
           element.label,
           element.options.map((o) => o.label),
@@ -437,5 +441,11 @@ export class InputScriptDialogueResponse<K extends string> {
 export class MissingElementsError extends Error {
   constructor() {
     super('Missing input elements');
+  }
+}
+
+export class MissingDropdownOptionsError extends Error {
+  constructor(name: string) {
+    super(`Missing dropdown options for ${name}`);
   }
 }
