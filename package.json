@@ -1,6 +1,6 @@
 {
   "name": "@mine-scripters/minecraft-script-dialogue",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "homepage": "https://github.com/mine-scripters/minecraft-script-dialogue",
   "description": "Minecraft Script Dialogue",
   "main": "./dist/MinecraftScriptDialogue.js",

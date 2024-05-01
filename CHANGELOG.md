@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.5](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.4...v1.1.5) (2024-05-01)
+
+
+### Bug Fixes
+
+* Prevents the player from getting stuck if killed while on a dialog ([#35](https://github.com/mine-scripters/minecraft-script-dialogue/issues/35)) ([9b480b2](https://github.com/mine-scripters/minecraft-script-dialogue/commit/9b480b253e03553a03bdf46673fe8579a2db461e))
+* Validates dropdown before sending it ([#36](https://github.com/mine-scripters/minecraft-script-dialogue/issues/36)) ([e52dc8b](https://github.com/mine-scripters/minecraft-script-dialogue/commit/e52dc8b0c798d7d8f5df5ed9e45ec3206c6e7149)), closes [#26](https://github.com/mine-scripters/minecraft-script-dialogue/issues/26)
+
 ## [1.1.4](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.3...v1.1.4) (2024-04-15)
 
 
