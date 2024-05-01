@@ -14,6 +14,7 @@ import {
   inputSlider,
   inputText,
   inputToggle,
+  MissingDropdownOptionsError,
   MissingElementsError,
 } from './InputScriptDialogue';
 import { newMockedInstance } from '../test/mock-helpers';
@@ -189,5 +190,15 @@ describe('InputScriptDialogue', () => {
     expect(response).toBeInstanceOf(DialogueRejectedResponse);
     expect((response as DialogueRejectedResponse).reason).toBe(undefined);
     expect((response as DialogueRejectedResponse).exception).toBeInstanceOf(MissingElementsError);
+  });
+
+  it('Test rejected dialogue without dropdown options', async () => {
+    const player = mockPlayer();
+    const response = await inputScriptDialogue('my dialogue').addElement(inputDropdown('foo', 'bar')).open({ player });
+
+    expect(response).toBeInstanceOf(DialogueRejectedResponse);
+    expect((response as DialogueRejectedResponse).reason).toBe(undefined);
+    expect((response as DialogueRejectedResponse).exception).toBeInstanceOf(MissingDropdownOptionsError);
+    expect(((response as DialogueRejectedResponse).exception as Error).message).toContain('foo');
   });
 });
