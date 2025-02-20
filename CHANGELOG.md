@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.5...v1.2.0) (2025-02-20)
+
+
+### Features
+
+* Adds support for submit button on 1.3.0+ ([15e247f](https://github.com/mine-scripters/minecraft-script-dialogue/commit/15e247f50878ab8a68148895880eab7a4742d62e))
+
 ## [1.1.5](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.4...v1.1.5) (2024-05-01)
 
 
