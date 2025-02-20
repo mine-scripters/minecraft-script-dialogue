@@ -48,6 +48,25 @@ interface RequiredShowDialogueOptions {
 }
 
 /**
+ * Divider element
+ */
+export interface Divider {
+  type: 'divider';
+}
+
+export interface Label {
+  type: 'label';
+  text: ScriptDialogueString;
+}
+
+export interface Header {
+  type: 'header';
+  text: ScriptDialogueString;
+}
+
+export type UIElement = Divider | Label | Header;
+
+/**
  * Options used when opening a script dialogue.
  * Controls the targeted player, the use of the camera and if we want to wait if the user is busy.
  *
@@ -111,7 +130,7 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
         if (i < options.busyRetriesCount) {
           i++;
           await asyncWait(options.busyRetriesTick);
-          if (options.player.isValid()) {
+          if (options.player.isValid) {
             continue;
           }
         }
@@ -131,13 +150,13 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
       options.player,
       `inputpermission set "${options.player.name}" camera enabled`,
       1,
-      () => !options.player.isValid()
+      () => !options.player.isValid
     );
     await runUntilSuccess(
       options.player,
       `inputpermission set "${options.player.name}" movement enabled`,
       1,
-      () => !options.player.isValid()
+      () => !options.player.isValid
     );
   }
 
