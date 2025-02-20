@@ -321,8 +321,8 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
   }
 
   withSubmitButton(submitButton?: ScriptDialogueString): InputScriptDialogue<K> {
-    return new InputScriptDialogue<K>(this.title, [...this.elements ], submitButton);
-  } 
+    return new InputScriptDialogue<K>(this.title, [...this.elements], submitButton);
+  }
 
   /**
    * Adds an input element to the input script dialogue.
