@@ -307,26 +307,26 @@ class MultiButtonDialogue extends ScriptDialogue {
         return new MultiButtonDialogue(this.title, this.body, [
             ...this.elements,
             {
-                type: "divider",
-            }
+                type: 'divider',
+            },
         ]);
     }
     addHeader(text) {
         return new MultiButtonDialogue(this.title, this.body, [
             ...this.elements,
             {
-                type: "header",
+                type: 'header',
                 text,
-            }
+            },
         ]);
     }
     addLabel(text) {
         return new MultiButtonDialogue(this.title, this.body, [
             ...this.elements,
             {
-                type: "label",
+                type: 'label',
                 text,
-            }
+            },
         ]);
     }
     /**
@@ -389,7 +389,7 @@ class MultiButtonDialogue extends ScriptDialogue {
         return formData;
     }
     async processResponse(response, _options) {
-        const buttons = this.elements.filter(e => !("type" in e));
+        const buttons = this.elements.filter((e) => !('type' in e));
         const selectedButton = buttons[response.selection];
         let callbackResponse = undefined;
         if (selectedButton.callback) {
@@ -663,21 +663,30 @@ class InputScriptDialogue extends ScriptDialogue {
         return new InputScriptDialogue(this.title, [...this.elements], submitButton);
     }
     addDivider() {
-        return new InputScriptDialogue(this.title, [...this.elements, {
-                type: "divider",
-            }], this.submitButton);
+        return new InputScriptDialogue(this.title, [
+            ...this.elements,
+            {
+                type: 'divider',
+            },
+        ], this.submitButton);
     }
     addHeader(text) {
-        return new InputScriptDialogue(this.title, [...this.elements, {
-                type: "header",
+        return new InputScriptDialogue(this.title, [
+            ...this.elements,
+            {
+                type: 'header',
                 text,
-            }], this.submitButton);
+            },
+        ], this.submitButton);
     }
     addLabel(text) {
-        return new InputScriptDialogue(this.title, [...this.elements, {
-                type: "label",
+        return new InputScriptDialogue(this.title, [
+            ...this.elements,
+            {
+                type: 'label',
                 text,
-            }], this.submitButton);
+            },
+        ], this.submitButton);
     }
     /**
      * Adds an input element to the input script dialogue.
@@ -728,7 +737,7 @@ class InputScriptDialogue extends ScriptDialogue {
             else if (element instanceof this.InputToggle) {
                 data.toggle(element.label, element.defaultValue);
             }
-            else if ("type" in element) {
+            else if ('type' in element) {
                 const type = element.type;
                 switch (type) {
                     case 'divider':
@@ -749,7 +758,7 @@ class InputScriptDialogue extends ScriptDialogue {
     }
     async processResponse(response, _options) {
         const formValues = response.formValues ?? this.elements.map((_e) => undefined);
-        const values = this.elements.filter(e => !("type" in e)).map((element, index) => {
+        const values = this.elements.filter((e) => !('type' in e)).map((element, index) => {
             const name = element.name;
             let value = 0;
             const formValue = formValues[index];
