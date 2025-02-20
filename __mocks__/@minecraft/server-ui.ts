@@ -47,7 +47,8 @@ export const ModalFormData: jest.MockedClass<any> =  jest.fn(() => createMockedC
   slider: jest.fn(),
   textField: jest.fn(),
   title: jest.fn(),
-  toggle: jest.fn()
+  toggle: jest.fn(),
+  submitButton: jest.fn(),
 }));
 export const ModalFormResponse: jest.MockedClass<any> =  jest.fn(() => createMockedClass<MC. ModalFormResponse>(ModalFormResponse, {
   formValues: [],
