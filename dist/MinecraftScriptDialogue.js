@@ -596,6 +596,7 @@ class InputToggle extends InputWithDefaultValue {
 class InputScriptDialogue extends ScriptDialogue {
     elements;
     title;
+    submitButton;
     // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
     InputDropdown = (InputDropdown);
     InputSlider = (InputSlider);
@@ -604,10 +605,14 @@ class InputScriptDialogue extends ScriptDialogue {
     /**
      * @internal
      */
-    constructor(title, elements) {
+    constructor(title, elements, submitButton) {
         super();
         this.title = title;
         this.elements = elements;
+        this.submitButton = submitButton;
+    }
+    withSubmitButton(submitButton) {
+        return new InputScriptDialogue(this.title, [...this.elements], submitButton);
     }
     /**
      * Adds an input element to the input script dialogue.
@@ -619,7 +624,7 @@ class InputScriptDialogue extends ScriptDialogue {
      * @see {@link inputText}
      */
     addElement(element) {
-        return new InputScriptDialogue(this.title, [...this.elements, element]);
+        return new InputScriptDialogue(this.title, [...this.elements, element], this.submitButton);
     }
     /**
      * Adds multiple input element to the input script dialogue.
@@ -631,7 +636,7 @@ class InputScriptDialogue extends ScriptDialogue {
      * @see {@link inputText}
      */
     addElements(elements) {
-        return new InputScriptDialogue(this.title, [...this.elements, ...elements]);
+        return new InputScriptDialogue(this.title, [...this.elements, ...elements], this.submitButton);
     }
     getShowable(_options) {
         if (this.elements.length === 0) {
@@ -639,6 +644,9 @@ class InputScriptDialogue extends ScriptDialogue {
         }
         const data = new ModalFormData();
         data.title(this.title);
+        if (this.submitButton) {
+            data.submitButton(this.submitButton);
+        }
         this.elements.forEach((element) => {
             if (element instanceof this.InputDropdown) {
                 if (element.options.length === 0) {

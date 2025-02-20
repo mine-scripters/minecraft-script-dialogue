@@ -487,6 +487,7 @@ declare class InputToggle<K extends string> extends InputWithDefaultValue<K, boo
 declare class InputScriptDialogue<K extends string> extends ScriptDialogue<InputScriptDialogueResponse<K>> {
     private readonly elements;
     private readonly title;
+    private readonly submitButton;
     // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
     private readonly InputDropdown;
     private readonly InputSlider;
@@ -495,7 +496,8 @@ declare class InputScriptDialogue<K extends string> extends ScriptDialogue<Input
     /**
      * @internal
      */
-    constructor(title: ScriptDialogueString, elements: Array<InputElement<K>>);
+    constructor(title: ScriptDialogueString, elements: Array<InputElement<K>>, submitButton?: ScriptDialogueString);
+    withSubmitButton(submitButton?: ScriptDialogueString): InputScriptDialogue<K>;
     /**
      * Adds an input element to the input script dialogue.
      * @param element
