@@ -1,5 +1,5 @@
 import type * as MC from '@minecraft/server'
-export const system: MC.System = {
+export const system = {
   afterEvents: {
     scriptEventReceive: {
       subscribe: jest.fn(),
@@ -20,5 +20,5 @@ export const system: MC.System = {
     callback();
     return 0;
   }),
-};
+} as unknown as MC.System;
 

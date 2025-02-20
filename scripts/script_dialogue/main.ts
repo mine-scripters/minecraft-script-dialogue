@@ -30,8 +30,12 @@ system.afterEvents.scriptEventReceive.subscribe(async (event) => {
             player,
           });
       })
+      .addDivider()
+      .addHeader('A header!')
       .addButton('two', 'Button two')
+      .addLabel('A label')
       .addButton('three', 'Button three')
+      .addDivider()
       .open({
         player,
         lockPlayerCamera: true,
@@ -96,9 +100,15 @@ system.afterEvents.scriptEventReceive.subscribe(async (event) => {
               .addOption('My second label', 'other-label')
               .setDefaultValueIndex(1)
           )
+          .addDivider()
+          .addHeader('Other header!')
+          .addLabel("here is more stuff, (yes, I'm a label!)")
           .addElement(inputSlider('s1', 'The slider', 10, 20, 2, 10))
           .addElement(inputToggle('t1', 'The toggle!', true))
           .addElement(inputText('text1', 'What do you want to write???', 'I am the placeholder', 'default value'))
+          .addDivider()
+          .addLabel('Now with a custom submit button text!')
+          .withSubmitButton('I am a custom button')
           .open({
             player,
           });

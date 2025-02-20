@@ -1,5 +1,12 @@
-import { ResolvedShowDialogueOptions, ScriptDialogue, ScriptDialogueString, Showable } from './ScriptDialogue';
+import {
+  ResolvedShowDialogueOptions,
+  ScriptDialogue,
+  ScriptDialogueString,
+  Showable,
+  UIElement,
+} from './ScriptDialogue';
 import { ModalFormData, ModalFormResponse } from '@minecraft/server-ui';
+import { assertNever } from './Utils';
 
 /**
  * Type for each input's value.
@@ -300,8 +307,9 @@ export class InputToggle<K extends string> extends InputWithDefaultValue<K, bool
  * @see {@link inputScriptDialogue}
  */
 export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputScriptDialogueResponse<K>> {
-  private readonly elements: Array<InputElement<K>>;
+  private readonly elements: Array<InputElement<K> | UIElement>;
   private readonly title: ScriptDialogueString;
+  private readonly submitButton: ScriptDialogueString | undefined;
 
   // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
   private readonly InputDropdown = InputDropdown<K>;
@@ -312,10 +320,60 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
   /**
    * @internal
    */
-  constructor(title: ScriptDialogueString, elements: Array<InputElement<K>>) {
+  constructor(
+    title: ScriptDialogueString,
+    elements: Array<InputElement<K> | UIElement>,
+    submitButton?: ScriptDialogueString
+  ) {
     super();
     this.title = title;
     this.elements = elements;
+    this.submitButton = submitButton;
+  }
+
+  withSubmitButton(submitButton?: ScriptDialogueString): InputScriptDialogue<K> {
+    return new InputScriptDialogue<K>(this.title, [...this.elements], submitButton);
+  }
+
+  addDivider(): InputScriptDialogue<K> {
+    return new InputScriptDialogue<K>(
+      this.title,
+      [
+        ...this.elements,
+        {
+          type: 'divider',
+        },
+      ],
+      this.submitButton
+    );
+  }
+
+  addHeader(text: ScriptDialogueString): InputScriptDialogue<K> {
+    return new InputScriptDialogue<K>(
+      this.title,
+      [
+        ...this.elements,
+        {
+          type: 'header',
+          text,
+        },
+      ],
+      this.submitButton
+    );
+  }
+
+  addLabel(text: ScriptDialogueString): InputScriptDialogue<K> {
+    return new InputScriptDialogue<K>(
+      this.title,
+      [
+        ...this.elements,
+        {
+          type: 'label',
+          text,
+        },
+      ],
+      this.submitButton
+    );
   }
 
   /**
@@ -328,7 +386,7 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
    * @see {@link inputText}
    */
   addElement<KEY extends string>(element: InputElement<KEY>) {
-    return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, element]);
+    return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, element], this.submitButton);
   }
 
   /**
@@ -341,7 +399,7 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
    * @see {@link inputText}
    */
   addElements<KEY extends string>(elements: Array<InputElement<KEY>>) {
-    return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, ...elements]);
+    return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, ...elements], this.submitButton);
   }
 
   protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ModalFormResponse> {
@@ -352,6 +410,10 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
     const data = new ModalFormData();
 
     data.title(this.title);
+
+    if (this.submitButton) {
+      data.submitButton(this.submitButton);
+    }
 
     this.elements.forEach((element) => {
       if (element instanceof this.InputDropdown) {
@@ -370,6 +432,21 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
         data.textField(element.label, element.placeholderText, element.defaultValue);
       } else if (element instanceof this.InputToggle) {
         data.toggle(element.label, element.defaultValue);
+      } else if ('type' in element) {
+        const type = element.type;
+        switch (type) {
+          case 'divider':
+            data.divider();
+            break;
+          case 'label':
+            data.label(element.text);
+            break;
+          case 'header':
+            data.header(element.text);
+            break;
+          default:
+            assertNever(type);
+        }
       }
     });
 
@@ -382,7 +459,7 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
   ): Promise<InputScriptDialogueResponse<K>> {
     const formValues = response.formValues ?? this.elements.map((_e) => undefined);
 
-    const values = this.elements.map((element, index) => {
+    const values = (this.elements.filter((e) => !('type' in e)) as Array<InputElement<K>>).map((element, index) => {
       const name = element.name;
       let value: InputValue = 0;
       const formValue = formValues[index];

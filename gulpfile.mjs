@@ -22,7 +22,7 @@ const configOutputScript = undefined; // Output script (the js file in the behav
 // constants, no need to update
 const constants = {
   environments: {
-    mcpelauncher: '/.local/share/mcpelauncher/games/com.mojang/',
+    mcpelauncher: '/.var/app/io.mrarm.mcpelauncher/data/mcpelauncher/games/com.mojang/',
     mcpelauncher_mac: '/Library/Application Support/mcpelauncher/games/com.mojang/',
     windows: {
       preview: '/AppData/Local/Packages/Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe/LocalState/games/com.mojang/',

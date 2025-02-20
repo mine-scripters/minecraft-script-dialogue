@@ -1,6 +1,9 @@
 import { FormRejectError, FormCancelationReason, MessageFormData, ActionFormData, ModalFormData } from '@minecraft/server-ui';
 import { system } from '@minecraft/server';
 
+const assertNever = (value) => {
+    throw new Error(`Invalid param ${value}`);
+};
 const asyncWait = async (ticks) => {
     return new Promise((resolve) => {
         system.runTimeout(() => {
@@ -83,7 +86,7 @@ class ScriptDialogue {
                 if (i < options.busyRetriesCount) {
                     i++;
                     await asyncWait(options.busyRetriesTick);
-                    if (options.player.isValid()) {
+                    if (options.player.isValid) {
                         continue;
                     }
                 }
@@ -96,8 +99,8 @@ class ScriptDialogue {
         options.player.runCommand(`inputpermission set "${options.player.name}" movement disabled`);
     }
     async unlockPlayerCamera(options) {
-        await runUntilSuccess(options.player, `inputpermission set "${options.player.name}" camera enabled`, 1, () => !options.player.isValid());
-        await runUntilSuccess(options.player, `inputpermission set "${options.player.name}" movement enabled`, 1, () => !options.player.isValid());
+        await runUntilSuccess(options.player, `inputpermission set "${options.player.name}" camera enabled`, 1, () => !options.player.isValid);
+        await runUntilSuccess(options.player, `inputpermission set "${options.player.name}" movement enabled`, 1, () => !options.player.isValid);
     }
     resolveShowDialogueOptions(options) {
         return {
@@ -283,22 +286,48 @@ const multiButtonScriptDialogue = (title) => {
 class MultiButtonDialogue extends ScriptDialogue {
     title;
     body;
-    buttons;
+    elements;
     /**
      * @internal
      */
-    constructor(title, body, buttons) {
+    constructor(title, body, elements) {
         super();
         this.title = title;
         this.body = body;
-        this.buttons = buttons;
+        this.elements = elements;
     }
     /**
      * Sets the content body of the multi button dialogue
      * @param body
      */
     setBody(body) {
-        return new MultiButtonDialogue(this.title, body, this.buttons);
+        return new MultiButtonDialogue(this.title, body, this.elements);
+    }
+    addDivider() {
+        return new MultiButtonDialogue(this.title, this.body, [
+            ...this.elements,
+            {
+                type: "divider",
+            }
+        ]);
+    }
+    addHeader(text) {
+        return new MultiButtonDialogue(this.title, this.body, [
+            ...this.elements,
+            {
+                type: "header",
+                text,
+            }
+        ]);
+    }
+    addLabel(text) {
+        return new MultiButtonDialogue(this.title, this.body, [
+            ...this.elements,
+            {
+                type: "label",
+                text,
+            }
+        ]);
     }
     /**
      * Adds a button to the multi button script dialogue.
@@ -308,7 +337,7 @@ class MultiButtonDialogue extends ScriptDialogue {
      */
     addButton(name, text, iconPath, callback) {
         return new MultiButtonDialogue(this.title, this.body, [
-            ...this.buttons,
+            ...this.elements,
             {
                 name,
                 text,
@@ -323,12 +352,12 @@ class MultiButtonDialogue extends ScriptDialogue {
      */
     addButtons(buttons) {
         return new MultiButtonDialogue(this.title, this.body, [
-            ...this.buttons,
+            ...this.elements,
             ...buttons,
         ]);
     }
     getShowable(_options) {
-        if (this.buttons.length === 0) {
+        if (this.elements.length === 0) {
             throw new MissingButtonsException();
         }
         const formData = new ActionFormData();
@@ -336,13 +365,32 @@ class MultiButtonDialogue extends ScriptDialogue {
         if (this.body) {
             formData.body(this.body);
         }
-        this.buttons.forEach((button) => {
-            formData.button(button.text, button.iconPath);
+        this.elements.forEach((element) => {
+            if ('type' in element) {
+                const type = element.type;
+                switch (type) {
+                    case 'divider':
+                        formData.divider();
+                        break;
+                    case 'header':
+                        formData.header(element.text);
+                        break;
+                    case 'label':
+                        formData.label(element.text);
+                        break;
+                    default:
+                        assertNever(type);
+                }
+            }
+            else {
+                formData.button(element.text, element.iconPath);
+            }
         });
         return formData;
     }
     async processResponse(response, _options) {
-        const selectedButton = this.buttons[response.selection];
+        const buttons = this.elements.filter(e => !("type" in e));
+        const selectedButton = buttons[response.selection];
         let callbackResponse = undefined;
         if (selectedButton.callback) {
             callbackResponse = await selectedButton.callback(selectedButton.name);
@@ -596,6 +644,7 @@ class InputToggle extends InputWithDefaultValue {
 class InputScriptDialogue extends ScriptDialogue {
     elements;
     title;
+    submitButton;
     // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
     InputDropdown = (InputDropdown);
     InputSlider = (InputSlider);
@@ -604,10 +653,31 @@ class InputScriptDialogue extends ScriptDialogue {
     /**
      * @internal
      */
-    constructor(title, elements) {
+    constructor(title, elements, submitButton) {
         super();
         this.title = title;
         this.elements = elements;
+        this.submitButton = submitButton;
+    }
+    withSubmitButton(submitButton) {
+        return new InputScriptDialogue(this.title, [...this.elements], submitButton);
+    }
+    addDivider() {
+        return new InputScriptDialogue(this.title, [...this.elements, {
+                type: "divider",
+            }], this.submitButton);
+    }
+    addHeader(text) {
+        return new InputScriptDialogue(this.title, [...this.elements, {
+                type: "header",
+                text,
+            }], this.submitButton);
+    }
+    addLabel(text) {
+        return new InputScriptDialogue(this.title, [...this.elements, {
+                type: "label",
+                text,
+            }], this.submitButton);
     }
     /**
      * Adds an input element to the input script dialogue.
@@ -619,7 +689,7 @@ class InputScriptDialogue extends ScriptDialogue {
      * @see {@link inputText}
      */
     addElement(element) {
-        return new InputScriptDialogue(this.title, [...this.elements, element]);
+        return new InputScriptDialogue(this.title, [...this.elements, element], this.submitButton);
     }
     /**
      * Adds multiple input element to the input script dialogue.
@@ -631,7 +701,7 @@ class InputScriptDialogue extends ScriptDialogue {
      * @see {@link inputText}
      */
     addElements(elements) {
-        return new InputScriptDialogue(this.title, [...this.elements, ...elements]);
+        return new InputScriptDialogue(this.title, [...this.elements, ...elements], this.submitButton);
     }
     getShowable(_options) {
         if (this.elements.length === 0) {
@@ -639,6 +709,9 @@ class InputScriptDialogue extends ScriptDialogue {
         }
         const data = new ModalFormData();
         data.title(this.title);
+        if (this.submitButton) {
+            data.submitButton(this.submitButton);
+        }
         this.elements.forEach((element) => {
             if (element instanceof this.InputDropdown) {
                 if (element.options.length === 0) {
@@ -655,12 +728,28 @@ class InputScriptDialogue extends ScriptDialogue {
             else if (element instanceof this.InputToggle) {
                 data.toggle(element.label, element.defaultValue);
             }
+            else if ("type" in element) {
+                const type = element.type;
+                switch (type) {
+                    case 'divider':
+                        data.divider();
+                        break;
+                    case 'label':
+                        data.label(element.text);
+                        break;
+                    case 'header':
+                        data.header(element.text);
+                        break;
+                    default:
+                        assertNever(type);
+                }
+            }
         });
         return data;
     }
     async processResponse(response, _options) {
         const formValues = response.formValues ?? this.elements.map((_e) => undefined);
-        const values = this.elements.map((element, index) => {
+        const values = this.elements.filter(e => !("type" in e)).map((element, index) => {
             const name = element.name;
             let value = 0;
             const formValue = formValues[index];
