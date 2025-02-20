@@ -302,6 +302,7 @@ export class InputToggle<K extends string> extends InputWithDefaultValue<K, bool
 export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputScriptDialogueResponse<K>> {
   private readonly elements: Array<InputElement<K>>;
   private readonly title: ScriptDialogueString;
+  private readonly submitButton: ScriptDialogueString | undefined;
 
   // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
   private readonly InputDropdown = InputDropdown<K>;
@@ -312,11 +313,16 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
   /**
    * @internal
    */
-  constructor(title: ScriptDialogueString, elements: Array<InputElement<K>>) {
+  constructor(title: ScriptDialogueString, elements: Array<InputElement<K>>, submitButton?: ScriptDialogueString) {
     super();
     this.title = title;
     this.elements = elements;
+    this.submitButton = submitButton;
   }
+
+  withSubmitButton(submitButton?: ScriptDialogueString): InputScriptDialogue<K> {
+    return new InputScriptDialogue<K>(this.title, [...this.elements ], submitButton);
+  } 
 
   /**
    * Adds an input element to the input script dialogue.
@@ -328,7 +334,7 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
    * @see {@link inputText}
    */
   addElement<KEY extends string>(element: InputElement<KEY>) {
-    return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, element]);
+    return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, element], this.submitButton);
   }
 
   /**
@@ -341,7 +347,7 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
    * @see {@link inputText}
    */
   addElements<KEY extends string>(elements: Array<InputElement<KEY>>) {
-    return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, ...elements]);
+    return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, ...elements], this.submitButton);
   }
 
   protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ModalFormResponse> {
@@ -352,6 +358,10 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
     const data = new ModalFormData();
 
     data.title(this.title);
+
+    if (this.submitButton) {
+      data.submitButton(this.submitButton);
+    }
 
     this.elements.forEach((element) => {
       if (element instanceof this.InputDropdown) {

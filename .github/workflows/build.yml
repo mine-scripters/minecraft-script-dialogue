@@ -2,9 +2,9 @@ name: Build and test
 
 on:
   push:
-    branches: ["main"]
+    branches: ["v1.x"]
   pull_request:
-    branches: ["main"]
+    branches: ["v1.x"]
 
 permissions:
   contents: write
@@ -37,7 +37,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - uses: stefanzweifel/git-auto-commit-action@v5
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/v1.x' }}
         with:
           commit_message: Updates `./dist/*` files with latest changes
           file_pattern: dist/*
