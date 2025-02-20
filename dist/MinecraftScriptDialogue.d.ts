@@ -36,6 +36,21 @@ interface RequiredShowDialogueOptions {
     player: Player;
 }
 /**
+ * Divider element
+ */
+interface Divider {
+    type: "divider";
+}
+interface Label {
+    type: "label";
+    text: ScriptDialogueString;
+}
+interface Header {
+    type: "header";
+    text: ScriptDialogueString;
+}
+type UIElement = Divider | Label | Header;
+/**
  * Options used when opening a script dialogue.
  * Controls the targeted player, the use of the camera and if we want to wait if the user is busy.
  *
@@ -248,16 +263,19 @@ interface MultiButton<T extends string, Callback> {
 declare class MultiButtonDialogue<T extends string, Callback = undefined> extends ScriptDialogue<ButtonDialogueResponse<T, Callback>> {
     private readonly title;
     private readonly body?;
-    private readonly buttons;
+    private readonly elements;
     /**
      * @internal
      */
-    constructor(title: ScriptDialogueString, body: ScriptDialogueString | undefined, buttons: Array<MultiButton<T, Callback>>);
+    constructor(title: ScriptDialogueString, body: ScriptDialogueString | undefined, elements: Array<MultiButton<T, Callback> | UIElement>);
     /**
      * Sets the content body of the multi button dialogue
      * @param body
      */
     setBody(body: ScriptDialogueString): MultiButtonDialogue<T, Callback>;
+    addDivider(): MultiButtonDialogue<T, Callback>;
+    addHeader(text: ScriptDialogueString): MultiButtonDialogue<T, Callback>;
+    addLabel(text: ScriptDialogueString): MultiButtonDialogue<T, Callback>;
     /**
      * Adds a button to the multi button script dialogue.
      * @param name name of the button
@@ -487,6 +505,7 @@ declare class InputToggle<K extends string> extends InputWithDefaultValue<K, boo
 declare class InputScriptDialogue<K extends string> extends ScriptDialogue<InputScriptDialogueResponse<K>> {
     private readonly elements;
     private readonly title;
+    private readonly submitButton;
     // work around TS2848: The right-hand side of an instanceof expression must not be an instantiation expression.
     private readonly InputDropdown;
     private readonly InputSlider;
@@ -495,7 +514,11 @@ declare class InputScriptDialogue<K extends string> extends ScriptDialogue<Input
     /**
      * @internal
      */
-    constructor(title: ScriptDialogueString, elements: Array<InputElement<K>>);
+    constructor(title: ScriptDialogueString, elements: Array<InputElement<K> | UIElement>, submitButton?: ScriptDialogueString);
+    withSubmitButton(submitButton?: ScriptDialogueString): InputScriptDialogue<K>;
+    addDivider(): InputScriptDialogue<K>;
+    addHeader(text: ScriptDialogueString): InputScriptDialogue<K>;
+    addLabel(text: ScriptDialogueString): InputScriptDialogue<K>;
     /**
      * Adds an input element to the input script dialogue.
      * @param element

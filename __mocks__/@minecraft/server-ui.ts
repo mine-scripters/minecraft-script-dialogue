@@ -17,7 +17,10 @@ export const ActionFormData : jest.MockedClass<any> = jest.fn(() => createMocked
   body: jest.fn(),
   button: jest.fn(),
   show: jest.fn(async () => new ActionFormResponse()),
-  title: jest.fn()
+  title: jest.fn(),
+  divider: jest.fn(),
+  header: jest.fn(),
+  label: jest.fn(),
 }));
 
 export const ActionFormResponse : jest.MockedClass<any>=  jest.fn(() => createMockedClass<MC.ActionFormResponse>(ActionFormResponse, {
@@ -47,7 +50,11 @@ export const ModalFormData: jest.MockedClass<any> =  jest.fn(() => createMockedC
   slider: jest.fn(),
   textField: jest.fn(),
   title: jest.fn(),
-  toggle: jest.fn()
+  toggle: jest.fn(),
+  divider: jest.fn(),
+  header: jest.fn(),
+  label: jest.fn(),
+  submitButton: jest.fn(),
 }));
 export const ModalFormResponse: jest.MockedClass<any> =  jest.fn(() => createMockedClass<MC. ModalFormResponse>(ModalFormResponse, {
   formValues: [],

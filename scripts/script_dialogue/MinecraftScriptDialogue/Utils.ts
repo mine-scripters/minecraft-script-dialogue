@@ -1,5 +1,9 @@
 import { Player, RawMessage, system } from '@minecraft/server';
 
+export const assertNever = (value: never): never => {
+  throw new Error(`Invalid param ${value}`);
+};
+
 export const asyncWait = async (ticks: number): Promise<void> => {
   return new Promise<void>((resolve) => {
     system.runTimeout(() => {

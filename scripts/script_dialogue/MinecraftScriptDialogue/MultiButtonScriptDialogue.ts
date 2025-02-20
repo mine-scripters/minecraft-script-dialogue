@@ -6,7 +6,9 @@ import {
   ScriptDialogue,
   ScriptDialogueString,
   Showable,
+  UIElement,
 } from './ScriptDialogue';
+import { assertNever } from './Utils';
 
 /**
  * Initializes a empty multi button script dialogue.
@@ -59,7 +61,7 @@ export class MultiButtonDialogue<T extends string, Callback = undefined> extends
 > {
   private readonly title: ScriptDialogueString;
   private readonly body?: ScriptDialogueString;
-  private readonly buttons: Array<MultiButton<T, Callback>>;
+  private readonly elements: Array<MultiButton<T, Callback> | UIElement>;
 
   /**
    * @internal
@@ -67,12 +69,12 @@ export class MultiButtonDialogue<T extends string, Callback = undefined> extends
   constructor(
     title: ScriptDialogueString,
     body: ScriptDialogueString | undefined,
-    buttons: Array<MultiButton<T, Callback>>
+    elements: Array<MultiButton<T, Callback> | UIElement>
   ) {
     super();
     this.title = title;
     this.body = body;
-    this.buttons = buttons;
+    this.elements = elements;
   }
 
   /**
@@ -80,7 +82,36 @@ export class MultiButtonDialogue<T extends string, Callback = undefined> extends
    * @param body
    */
   setBody(body: ScriptDialogueString): MultiButtonDialogue<T, Callback> {
-    return new MultiButtonDialogue<T, Callback>(this.title, body, this.buttons);
+    return new MultiButtonDialogue<T, Callback>(this.title, body, this.elements);
+  }
+
+  addDivider(): MultiButtonDialogue<T, Callback> {
+    return new MultiButtonDialogue<T, Callback>(this.title, this.body, [
+      ...this.elements,
+      {
+        type: 'divider',
+      },
+    ]);
+  }
+
+  addHeader(text: ScriptDialogueString): MultiButtonDialogue<T, Callback> {
+    return new MultiButtonDialogue<T, Callback>(this.title, this.body, [
+      ...this.elements,
+      {
+        type: 'header',
+        text,
+      },
+    ]);
+  }
+
+  addLabel(text: ScriptDialogueString): MultiButtonDialogue<T, Callback> {
+    return new MultiButtonDialogue<T, Callback>(this.title, this.body, [
+      ...this.elements,
+      {
+        type: 'label',
+        text,
+      },
+    ]);
   }
 
   /**
@@ -96,7 +127,7 @@ export class MultiButtonDialogue<T extends string, Callback = undefined> extends
     callback?: (selected: string) => Promise<ButtonCallback>
   ): MultiButtonDialogue<NonNullable<T | NAME>, Callback | ButtonCallback> {
     return new MultiButtonDialogue<NonNullable<T | NAME>, Callback | ButtonCallback>(this.title, this.body, [
-      ...this.buttons,
+      ...this.elements,
       {
         name,
         text,
@@ -114,13 +145,13 @@ export class MultiButtonDialogue<T extends string, Callback = undefined> extends
     buttons: Array<MultiButton<NAMES, ButtonCallback>>
   ): MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback> {
     return new MultiButtonDialogue<T | NAMES, Callback | ButtonCallback>(this.title, this.body, [
-      ...this.buttons,
+      ...this.elements,
       ...buttons,
     ]) as MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback>;
   }
 
   protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ActionFormResponse> {
-    if (this.buttons.length === 0) {
+    if (this.elements.length === 0) {
       throw new MissingButtonsException();
     }
 
@@ -132,8 +163,25 @@ export class MultiButtonDialogue<T extends string, Callback = undefined> extends
       formData.body(this.body);
     }
 
-    this.buttons.forEach((button) => {
-      formData.button(button.text, button.iconPath);
+    this.elements.forEach((element) => {
+      if ('type' in element) {
+        const type = element.type;
+        switch (type) {
+          case 'divider':
+            formData.divider();
+            break;
+          case 'header':
+            formData.header(element.text);
+            break;
+          case 'label':
+            formData.label(element.text);
+            break;
+          default:
+            assertNever(type);
+        }
+      } else {
+        formData.button(element.text, element.iconPath);
+      }
     });
 
     return formData;
@@ -143,7 +191,8 @@ export class MultiButtonDialogue<T extends string, Callback = undefined> extends
     response: ActionFormResponse,
     _options: ResolvedShowDialogueOptions
   ): Promise<ButtonDialogueResponse<T, Callback>> {
-    const selectedButton = this.buttons[response.selection as number];
+    const buttons = this.elements.filter((e) => !('type' in e)) as Array<MultiButton<T, Callback>>;
+    const selectedButton = buttons[response.selection as number];
     let callbackResponse: Callback | undefined = undefined;
     if (selectedButton.callback) {
       callbackResponse = await selectedButton.callback(selectedButton.name);
