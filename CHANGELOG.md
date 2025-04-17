@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.5...v2.0.0) (2025-04-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use the input options for each type
+* Adding support for submitButton, divider, label and header
+
+### Features
+
+* Adding support for submitButton, divider, label and header ([91c1445](https://github.com/mine-scripters/minecraft-script-dialogue/commit/91c144573eb361024562a4e499472325b13e5847))
+* Use the input options for each type ([325ff75](https://github.com/mine-scripters/minecraft-script-dialogue/commit/325ff75718861133df80229aedfa6ea24d7d70f9))
+
 ## [1.1.5](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.4...v1.1.5) (2024-05-01)
 
 
