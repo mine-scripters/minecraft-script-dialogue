@@ -420,7 +420,7 @@ const inputScriptDialogue = (title) => {
  * @param label
  */
 const inputDropdown = (name, label) => {
-    return new InputDropdown(name, label, [], 0);
+    return new InputDropdown(name, label, [], 0, undefined);
 };
 /**
  * Creates a new slider element to use in a input script dialogue.
@@ -434,7 +434,7 @@ const inputDropdown = (name, label) => {
  * @param defaultValue
  */
 const inputSlider = (name, label, minimumValue, maximumValue, valueStep, defaultValue) => {
-    return new InputSlider(name, label, minimumValue, maximumValue, valueStep, defaultValue);
+    return new InputSlider(name, label, minimumValue, maximumValue, valueStep, defaultValue, undefined);
 };
 /**
  * Creates a new text field element to use in a input script dialogue.
@@ -446,7 +446,7 @@ const inputSlider = (name, label, minimumValue, maximumValue, valueStep, default
  * @param defaultValue
  */
 const inputText = (name, label, placeholderText, defaultValue) => {
-    return new InputText(name, label, placeholderText, defaultValue);
+    return new InputText(name, label, placeholderText, defaultValue, undefined);
 };
 /**
  * Creates a new toggle element to use in a input script dialogue.
@@ -457,7 +457,7 @@ const inputText = (name, label, placeholderText, defaultValue) => {
  * @param defaultValue
  */
 const inputToggle = (name, label, defaultValue) => {
-    return new InputToggle(name, label, defaultValue);
+    return new InputToggle(name, label, defaultValue, undefined);
 };
 /**
  * Base for all input elements displayed in the input script dialogue.
@@ -483,9 +483,14 @@ class InputElement {
     /**
      * @internal
      */
-    constructor(name, label) {
+    tooltip;
+    /**
+     * @internal
+     */
+    constructor(name, label, tooltip) {
         this.name = name;
         this.label = label;
+        this.tooltip = tooltip;
     }
 }
 /**
@@ -508,8 +513,8 @@ class InputWithDefaultValue extends InputElement {
     /**
      * @internal
      */
-    constructor(name, label, defaultValue) {
-        super(name, label);
+    constructor(name, label, tooltip, defaultValue) {
+        super(name, label, tooltip);
         this.defaultValue = defaultValue;
     }
 }
@@ -544,8 +549,8 @@ class InputDropdown extends InputElement {
     /**
      * @internal
      */
-    constructor(name, label, options, defaultValueIndex) {
-        super(name, label);
+    constructor(name, label, options, defaultValueIndex, tooltip) {
+        super(name, label, tooltip);
         this.defaultValueIndex = defaultValueIndex ?? 0;
         this.options = options;
     }
@@ -554,7 +559,7 @@ class InputDropdown extends InputElement {
      * @param defaultValueIndex
      */
     setDefaultValueIndex(defaultValueIndex) {
-        return new InputDropdown(this.name, this.label, [...this.options], defaultValueIndex);
+        return new InputDropdown(this.name, this.label, [...this.options], defaultValueIndex, this.tooltip);
     }
     /**
      * Adds an option to the dropdown
@@ -562,7 +567,10 @@ class InputDropdown extends InputElement {
      * @param value
      */
     addOption(label, value) {
-        return new InputDropdown(this.name, this.label, [...this.options, new InputDropdownOption(label, value)], this.defaultValueIndex);
+        return new InputDropdown(this.name, this.label, [...this.options, new InputDropdownOption(label, value)], this.defaultValueIndex, this.tooltip);
+    }
+    withTooltip(tooltip) {
+        return new InputDropdown(this.name, this.label, [...this.options], this.defaultValueIndex, tooltip);
     }
 }
 /**
@@ -589,11 +597,14 @@ class InputSlider extends InputWithDefaultValue {
     /**
      * @internal
      */
-    constructor(name, label, minimumValue, maximumValue, valueStep, defaultValue) {
-        super(name, label, defaultValue ?? minimumValue);
+    constructor(name, label, minimumValue, maximumValue, valueStep, defaultValue, tooltip) {
+        super(name, label, tooltip, defaultValue ?? minimumValue);
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
         this.valueStep = valueStep;
+    }
+    withTooltip(tooltip) {
+        return new InputSlider(this.name, this.label, this.minimumValue, this.maximumValue, this.valueStep, this.defaultValue, tooltip);
     }
 }
 /**
@@ -612,9 +623,12 @@ class InputText extends InputWithDefaultValue {
     /**
      * @internal
      */
-    constructor(name, label, placeholderText, defaultValue) {
-        super(name, label, defaultValue ?? '');
+    constructor(name, label, placeholderText, defaultValue, tooltip) {
+        super(name, label, tooltip, defaultValue ?? '');
         this.placeholderText = placeholderText;
+    }
+    withTooltip(tooltip) {
+        return new InputText(this.name, this.label, this.placeholderText, this.defaultValue, tooltip);
     }
 }
 /**
@@ -629,8 +643,11 @@ class InputToggle extends InputWithDefaultValue {
     /**
      * @internal
      */
-    constructor(name, label, defaultValue) {
-        super(name, label, !!defaultValue);
+    constructor(name, label, defaultValue, tooltip) {
+        super(name, label, tooltip, !!defaultValue);
+    }
+    withTooltip(tooltip) {
+        return new InputToggle(this.name, this.label, this.defaultValue, tooltip);
     }
 }
 /**
@@ -726,16 +743,29 @@ class InputScriptDialogue extends ScriptDialogue {
                 if (element.options.length === 0) {
                     throw new MissingDropdownOptionsError(element.name);
                 }
-                data.dropdown(element.label, element.options.map((o) => o.label), element.defaultValueIndex);
+                data.dropdown(element.label, element.options.map((o) => o.label), {
+                    defaultValueIndex: element.defaultValueIndex,
+                    tooltip: element.tooltip,
+                });
             }
             else if (element instanceof this.InputSlider) {
-                data.slider(element.label, element.minimumValue, element.maximumValue, element.valueStep, element.defaultValue);
+                data.slider(element.label, element.minimumValue, element.maximumValue, {
+                    defaultValue: element.defaultValue,
+                    valueStep: element.valueStep,
+                    tooltip: element.tooltip,
+                });
             }
             else if (element instanceof this.InputText) {
-                data.textField(element.label, element.placeholderText, element.defaultValue);
+                data.textField(element.label, element.placeholderText, {
+                    defaultValue: element.defaultValue,
+                    tooltip: element.tooltip,
+                });
             }
             else if (element instanceof this.InputToggle) {
-                data.toggle(element.label, element.defaultValue);
+                data.toggle(element.label, {
+                    defaultValue: element.defaultValue,
+                    tooltip: element.tooltip,
+                });
             }
             else if ('type' in element) {
                 const type = element.type;

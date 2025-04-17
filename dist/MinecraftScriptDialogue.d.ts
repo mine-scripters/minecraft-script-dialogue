@@ -371,7 +371,11 @@ declare class InputElement<K extends string> {
     /**
      * @internal
      */
-    constructor(name: K, label: ScriptDialogueString);
+    readonly tooltip: ScriptDialogueString | undefined;
+    /**
+     * @internal
+     */
+    constructor(name: K, label: ScriptDialogueString, tooltip?: ScriptDialogueString);
 }
 /**
  * Base for all input elements that have a fixed default value.
@@ -393,7 +397,7 @@ declare class InputWithDefaultValue<K extends string, V extends InputValue> exte
     /**
      * @internal
      */
-    constructor(name: K, label: ScriptDialogueString, defaultValue: V);
+    constructor(name: K, label: ScriptDialogueString, tooltip: ScriptDialogueString | undefined, defaultValue: V);
 }
 /**
  * @internal
@@ -423,7 +427,7 @@ declare class InputDropdown<K extends string> extends InputElement<K> {
     /**
      * @internal
      */
-    constructor(name: K, label: ScriptDialogueString, options: ReadonlyArray<InputDropdownOption>, defaultValueIndex?: number);
+    constructor(name: K, label: ScriptDialogueString, options: ReadonlyArray<InputDropdownOption>, defaultValueIndex: number | undefined, tooltip: ScriptDialogueString | undefined);
     /**
      * Sets the default index of the option you would like to use
      * @param defaultValueIndex
@@ -435,6 +439,7 @@ declare class InputDropdown<K extends string> extends InputElement<K> {
      * @param value
      */
     addOption(label: ScriptDialogueString, value: InputValue): InputDropdown<K>;
+    withTooltip(tooltip: ScriptDialogueString): InputDropdown<K>;
 }
 /**
  * Input element's representation of a slider.
@@ -456,11 +461,12 @@ declare class InputSlider<K extends string> extends InputWithDefaultValue<K, num
     /**
      * @internal
      */
-    readonly valueStep: number;
+    readonly valueStep: number | undefined;
     /**
      * @internal
      */
-    constructor(name: K, label: ScriptDialogueString, minimumValue: number, maximumValue: number, valueStep: number, defaultValue?: number);
+    constructor(name: K, label: ScriptDialogueString, minimumValue: number, maximumValue: number, valueStep: number | undefined, defaultValue: number | undefined, tooltip: undefined | ScriptDialogueString);
+    withTooltip(tooltip: ScriptDialogueString): InputSlider<K>;
 }
 /**
  * Input element's representation of text field.
@@ -478,7 +484,8 @@ declare class InputText<K extends string> extends InputWithDefaultValue<K, strin
     /**
      * @internal
      */
-    constructor(name: K, label: ScriptDialogueString, placeholderText: ScriptDialogueString, defaultValue?: string);
+    constructor(name: K, label: ScriptDialogueString, placeholderText: ScriptDialogueString, defaultValue: string | undefined, tooltip: ScriptDialogueString | undefined);
+    withTooltip(tooltip: ScriptDialogueString): InputText<K>;
 }
 /**
  * Input element's representation of toggle.
@@ -492,7 +499,8 @@ declare class InputToggle<K extends string> extends InputWithDefaultValue<K, boo
     /**
      * @internal
      */
-    constructor(name: K, label: ScriptDialogueString, defaultValue?: boolean);
+    constructor(name: K, label: ScriptDialogueString, defaultValue: boolean | undefined, tooltip: ScriptDialogueString | undefined);
+    withTooltip(tooltip: ScriptDialogueString): InputToggle<K>;
 }
 /**
  * Class used to build input script dialogues.
