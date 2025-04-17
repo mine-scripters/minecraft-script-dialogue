@@ -7,8 +7,8 @@
   "types": "./dist/MinecraftScriptDialogue.d.ts",
   "private": false,
   "devDependencies": {
-    "@minecraft/server": "2.0.0-beta.1.21.70-preview.24",
-    "@minecraft/server-ui": "2.0.0-beta.1.21.70-preview.24",
+    "@minecraft/server": "2.0.0-beta.1.21.80-preview.28",
+    "@minecraft/server-ui": "2.0.0-beta.1.21.80-preview.28",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.6",
@@ -42,8 +42,8 @@
     "enablemcpreviewloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-424268864-5579737-879501358-346833251-474568803-887069379-4040235476"
   },
   "peerDependencies": {
-    "@minecraft/server": "^2.0.0",
-    "@minecraft/server-ui": "^2.0.0"
+    "@minecraft/server": "^2.0.0-beta.1.21.70-preview.28",
+    "@minecraft/server-ui": "^2.0.0-beta.1.21.70-preview.28"
   },
   "files": [
     "package.json",

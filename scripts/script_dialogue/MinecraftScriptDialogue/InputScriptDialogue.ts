@@ -37,7 +37,7 @@ export const inputScriptDialogue = (title: ScriptDialogueString) => {
  * @param label
  */
 export const inputDropdown = <K extends string>(name: K, label: ScriptDialogueString) => {
-  return new InputDropdown<K>(name, label, [], 0);
+  return new InputDropdown<K>(name, label, [], 0, undefined);
 };
 
 /**
@@ -59,7 +59,7 @@ export const inputSlider = <K extends string>(
   valueStep: number,
   defaultValue?: number
 ) => {
-  return new InputSlider<K>(name, label, minimumValue, maximumValue, valueStep, defaultValue);
+  return new InputSlider<K>(name, label, minimumValue, maximumValue, valueStep, defaultValue, undefined);
 };
 
 /**
@@ -77,7 +77,7 @@ export const inputText = <K extends string>(
   placeholderText: ScriptDialogueString,
   defaultValue?: string
 ) => {
-  return new InputText<K>(name, label, placeholderText, defaultValue);
+  return new InputText<K>(name, label, placeholderText, defaultValue, undefined);
 };
 
 /**
@@ -89,7 +89,7 @@ export const inputText = <K extends string>(
  * @param defaultValue
  */
 export const inputToggle = <K extends string>(name: K, label: ScriptDialogueString, defaultValue?: boolean) => {
-  return new InputToggle<K>(name, label, defaultValue);
+  return new InputToggle<K>(name, label, defaultValue, undefined);
 };
 
 /**
@@ -113,13 +113,18 @@ export class InputElement<K extends string> {
    * @internal
    */
   readonly label: ScriptDialogueString;
+  /**
+   * @internal
+   */
+  readonly tooltip: ScriptDialogueString | undefined;
 
   /**
    * @internal
    */
-  constructor(name: K, label: ScriptDialogueString) {
+  constructor(name: K, label: ScriptDialogueString, tooltip?: ScriptDialogueString) {
     this.name = name;
     this.label = label;
+    this.tooltip = tooltip;
   }
 }
 
@@ -144,8 +149,8 @@ export class InputWithDefaultValue<K extends string, V extends InputValue> exten
   /**
    * @internal
    */
-  constructor(name: K, label: ScriptDialogueString, defaultValue: V) {
-    super(name, label);
+  constructor(name: K, label: ScriptDialogueString, tooltip: ScriptDialogueString | undefined, defaultValue: V) {
+    super(name, label, tooltip);
     this.defaultValue = defaultValue;
   }
 }
@@ -188,9 +193,10 @@ export class InputDropdown<K extends string> extends InputElement<K> {
     name: K,
     label: ScriptDialogueString,
     options: ReadonlyArray<InputDropdownOption>,
-    defaultValueIndex?: number
+    defaultValueIndex: number | undefined,
+    tooltip: ScriptDialogueString | undefined
   ) {
-    super(name, label);
+    super(name, label, tooltip);
     this.defaultValueIndex = defaultValueIndex ?? 0;
     this.options = options;
   }
@@ -200,7 +206,7 @@ export class InputDropdown<K extends string> extends InputElement<K> {
    * @param defaultValueIndex
    */
   setDefaultValueIndex(defaultValueIndex: number) {
-    return new InputDropdown<K>(this.name, this.label, [...this.options], defaultValueIndex);
+    return new InputDropdown<K>(this.name, this.label, [...this.options], defaultValueIndex, this.tooltip);
   }
 
   /**
@@ -213,8 +219,13 @@ export class InputDropdown<K extends string> extends InputElement<K> {
       this.name,
       this.label,
       [...this.options, new InputDropdownOption(label, value)],
-      this.defaultValueIndex
+      this.defaultValueIndex,
+      this.tooltip
     );
+  }
+
+  withTooltip(tooltip: ScriptDialogueString): InputDropdown<K> {
+    return new InputDropdown<K>(this.name, this.label, [...this.options], this.defaultValueIndex, tooltip);
   }
 }
 
@@ -238,7 +249,7 @@ export class InputSlider<K extends string> extends InputWithDefaultValue<K, numb
   /**
    * @internal
    */
-  readonly valueStep: number;
+  readonly valueStep: number | undefined;
 
   /**
    * @internal
@@ -248,13 +259,26 @@ export class InputSlider<K extends string> extends InputWithDefaultValue<K, numb
     label: ScriptDialogueString,
     minimumValue: number,
     maximumValue: number,
-    valueStep: number,
-    defaultValue?: number
+    valueStep: number | undefined,
+    defaultValue: number | undefined,
+    tooltip: undefined | ScriptDialogueString
   ) {
-    super(name, label, defaultValue ?? minimumValue);
+    super(name, label, tooltip, defaultValue ?? minimumValue);
     this.minimumValue = minimumValue;
     this.maximumValue = maximumValue;
     this.valueStep = valueStep;
+  }
+
+  withTooltip(tooltip: ScriptDialogueString): InputSlider<K> {
+    return new InputSlider<K>(
+      this.name,
+      this.label,
+      this.minimumValue,
+      this.maximumValue,
+      this.valueStep,
+      this.defaultValue,
+      tooltip
+    );
   }
 }
 
@@ -275,9 +299,19 @@ export class InputText<K extends string> extends InputWithDefaultValue<K, string
   /**
    * @internal
    */
-  constructor(name: K, label: ScriptDialogueString, placeholderText: ScriptDialogueString, defaultValue?: string) {
-    super(name, label, defaultValue ?? '');
+  constructor(
+    name: K,
+    label: ScriptDialogueString,
+    placeholderText: ScriptDialogueString,
+    defaultValue: string | undefined,
+    tooltip: ScriptDialogueString | undefined
+  ) {
+    super(name, label, tooltip, defaultValue ?? '');
     this.placeholderText = placeholderText;
+  }
+
+  withTooltip(tooltip: ScriptDialogueString): InputText<K> {
+    return new InputText<K>(this.name, this.label, this.placeholderText, this.defaultValue, tooltip);
   }
 }
 
@@ -293,8 +327,17 @@ export class InputToggle<K extends string> extends InputWithDefaultValue<K, bool
   /**
    * @internal
    */
-  constructor(name: K, label: ScriptDialogueString, defaultValue?: boolean) {
-    super(name, label, !!defaultValue);
+  constructor(
+    name: K,
+    label: ScriptDialogueString,
+    defaultValue: boolean | undefined,
+    tooltip: ScriptDialogueString | undefined
+  ) {
+    super(name, label, tooltip, !!defaultValue);
+  }
+
+  withTooltip(tooltip: ScriptDialogueString): InputToggle<K> {
+    return new InputToggle<K>(this.name, this.label, this.defaultValue, tooltip);
   }
 }
 
@@ -424,14 +467,27 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
         data.dropdown(
           element.label,
           element.options.map((o) => o.label),
-          element.defaultValueIndex
+          {
+            defaultValueIndex: element.defaultValueIndex,
+            tooltip: element.tooltip,
+          }
         );
       } else if (element instanceof this.InputSlider) {
-        data.slider(element.label, element.minimumValue, element.maximumValue, element.valueStep, element.defaultValue);
+        data.slider(element.label, element.minimumValue, element.maximumValue, {
+          defaultValue: element.defaultValue,
+          valueStep: element.valueStep,
+          tooltip: element.tooltip,
+        });
       } else if (element instanceof this.InputText) {
-        data.textField(element.label, element.placeholderText, element.defaultValue);
+        data.textField(element.label, element.placeholderText, {
+          defaultValue: element.defaultValue,
+          tooltip: element.tooltip,
+        });
       } else if (element instanceof this.InputToggle) {
-        data.toggle(element.label, element.defaultValue);
+        data.toggle(element.label, {
+          defaultValue: element.defaultValue,
+          tooltip: element.tooltip,
+        });
       } else if ('type' in element) {
         const type = element.type;
         switch (type) {

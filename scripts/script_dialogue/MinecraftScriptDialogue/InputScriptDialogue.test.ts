@@ -114,17 +114,28 @@ describe('InputScriptDialogue', () => {
       1,
       DROPDOWN.TEXT,
       [DROPDOWN.OPTIONS1.LABEL, DROPDOWN.OPTIONS2.LABEL, DROPDOWN.OPTIONS3.LABEL],
-      0
+      {
+        defaultValueIndex: 0,
+      }
     );
     expect(instance.dropdown).toHaveBeenNthCalledWith(
       2,
       DROPDOWN2.TEXT,
       [DROPDOWN2.OPTIONS1.LABEL, DROPDOWN2.OPTIONS2.LABEL, DROPDOWN2.OPTIONS3.LABEL],
-      1
+      {
+        defaultValueIndex: 1,
+      }
     );
-    expect(instance.slider).toHaveBeenCalledWith(SLIDER.TEXT, SLIDER.MIN, SLIDER.MAX, SLIDER.STEP, SLIDER.DEFAULT);
-    expect(instance.textField).toHaveBeenCalledWith(TEXT.TEXT, TEXT.PLACEHOLDER, TEXT.DEFAULT);
-    expect(instance.toggle).toHaveBeenCalledWith(TOGGLE.TEXT, TOGGLE.DEFAULT);
+    expect(instance.slider).toHaveBeenCalledWith(SLIDER.TEXT, SLIDER.MIN, SLIDER.MAX, {
+      defaultValue: SLIDER.DEFAULT,
+      valueStep: SLIDER.STEP,
+    });
+    expect(instance.textField).toHaveBeenCalledWith(TEXT.TEXT, TEXT.PLACEHOLDER, {
+      defaultValue: TEXT.DEFAULT,
+    });
+    expect(instance.toggle).toHaveBeenCalledWith(TOGGLE.TEXT, {
+      defaultValue: TOGGLE.DEFAULT,
+    });
 
     expect(instance.show).toHaveBeenCalledWith(player);
   });
