@@ -356,6 +356,16 @@ class MultiButtonDialogue extends ScriptDialogue {
             ...buttons,
         ]);
     }
+    /**
+     * Adds multiple buttons and ui elements to the multi button script dialogue.
+     * @param buttons array of buttons
+     */
+    addElements(elements) {
+        return new MultiButtonDialogue(this.title, this.body, [
+            ...this.elements,
+            ...elements,
+        ]);
+    }
     getShowable(_options) {
         if (this.elements.length === 0) {
             throw new MissingButtonsException();

@@ -288,6 +288,11 @@ declare class MultiButtonDialogue<T extends string, Callback = undefined> extend
      * @param buttons array of buttons
      */
     addButtons<NAMES extends string, ButtonCallback = undefined>(buttons: Array<MultiButton<NAMES, ButtonCallback>>): MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback>;
+    /**
+     * Adds multiple buttons and ui elements to the multi button script dialogue.
+     * @param buttons array of buttons
+     */
+    addElements<NAMES extends string, ButtonCallback = undefined>(elements: Array<MultiButton<NAMES, ButtonCallback> | UIElement>): MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback>;
     protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ActionFormResponse>;
     protected processResponse(response: ActionFormResponse, _options: ResolvedShowDialogueOptions): Promise<ButtonDialogueResponse<T, Callback>>;
 }
@@ -546,7 +551,7 @@ declare class InputScriptDialogue<K extends string> extends ScriptDialogue<Input
      * @see {@link inputToggle}
      * @see {@link inputText}
      */
-    addElements<KEY extends string>(elements: Array<InputElement<KEY>>): InputScriptDialogue<K | KEY>;
+    addElements<KEY extends string>(elements: Array<InputElement<KEY> | UIElement>): InputScriptDialogue<K | KEY>;
     protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ModalFormResponse>;
     protected processResponse(response: ModalFormResponse, _options: ResolvedShowDialogueOptions): Promise<InputScriptDialogueResponse<K>>;
 }
