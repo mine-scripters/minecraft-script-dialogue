@@ -18,6 +18,9 @@ export {
   ShowDialogueOptions,
   ScriptDialogueString,
   MissingButtonsException,
+  uiDivider,
+  uiLabel,
+  uiHeader,
 } from './ScriptDialogue';
 export { TRANSLATE } from './Utils';
 
