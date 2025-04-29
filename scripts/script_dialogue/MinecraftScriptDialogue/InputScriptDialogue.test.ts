@@ -5,7 +5,7 @@ import {
   ModalFormResponse,
   FormRejectError,
 } from '@minecraft/server-ui';
-import { DialogueCanceledResponse, DialogueRejectedResponse } from './ScriptDialogue';
+import { DialogueCanceledResponse, DialogueRejectedResponse, uiDivider, uiHeader, uiLabel } from './ScriptDialogue';
 import { mockPlayer } from '../test/server-utils';
 import {
   inputDropdown,
@@ -88,8 +88,11 @@ const createInputScriptDialogue = () => {
     )
     .addElement(inputSlider(SLIDER.NAME, SLIDER.TEXT, SLIDER.MIN, SLIDER.MAX, SLIDER.STEP, SLIDER.DEFAULT))
     .addElements([
+      uiDivider(),
+      uiHeader('Hello'),
       inputText(TEXT.NAME, TEXT.TEXT, TEXT.PLACEHOLDER, TEXT.DEFAULT),
       inputToggle(TOGGLE.NAME, TOGGLE.TEXT, TOGGLE.DEFAULT),
+      uiLabel('Options:'),
       inputDropdown(DROPDOWN2.NAME, DROPDOWN2.TEXT)
         .addOption(DROPDOWN2.OPTIONS1.LABEL, DROPDOWN2.OPTIONS1.VALUE)
         .addOption(DROPDOWN2.OPTIONS2.LABEL, DROPDOWN2.OPTIONS2.VALUE)
@@ -109,6 +112,9 @@ describe('InputScriptDialogue', () => {
     const instance = jest.mocked(ModalFormData).mock.results[0].value as ModalFormData;
 
     expect(instance.title).toHaveBeenCalledWith(TITLE);
+    expect(instance.divider).toHaveBeenCalledTimes(1);
+    expect(instance.header).toHaveBeenCalledTimes(1);
+    expect(instance.label).toHaveBeenCalledTimes(1);
     expect(instance.dropdown).toHaveBeenCalledTimes(2);
     expect(instance.dropdown).toHaveBeenNthCalledWith(
       1,

@@ -11,6 +11,9 @@ import {
   DialogueCanceledResponse,
   DialogueRejectedResponse,
   MissingButtonsException,
+  uiDivider,
+  uiHeader,
+  uiLabel,
 } from './ScriptDialogue';
 import { mockPlayer } from '../test/server-utils';
 import { newMockedInstance } from '../test/mock-helpers';
@@ -97,6 +100,45 @@ describe('MultiButtonScriptDialogue', () => {
 
     expect(instance.title).toHaveBeenCalledWith(TITLE);
     expect(instance.body).not.toHaveBeenCalled();
+    expect(instance.button).toHaveBeenCalledTimes(4);
+    expect(instance.button).toHaveBeenNthCalledWith(1, BUTTON1.TEXT, BUTTON1.ICON);
+    expect(instance.button).toHaveBeenNthCalledWith(2, BUTTON2.TEXT, BUTTON2.ICON);
+    expect(instance.button).toHaveBeenNthCalledWith(3, 'button-3.text', 'button-3.icon');
+    expect(instance.button).toHaveBeenNthCalledWith(4, 'button-4.text', undefined);
+
+    expect(instance.show).toHaveBeenCalledWith(player);
+  });
+
+  it('Can add multiple buttons and ui elements at once', async () => {
+    const player = mockPlayer();
+
+    await createMultiButtonScriptDialogue()
+      .addElements([
+        uiHeader('Hello world'),
+        {
+          text: 'button-3.text',
+          name: 'button-3.name',
+          iconPath: 'button-3.icon',
+        },
+        uiDivider(),
+        uiLabel('hey'),
+        {
+          text: 'button-4.text',
+          name: 'button-4.name',
+          iconPath: undefined,
+        },
+      ])
+      .open({ player });
+
+    expect(ActionFormData).toHaveBeenCalledTimes(1);
+
+    const instance = jest.mocked(ActionFormData).mock.results[0].value as ActionFormData;
+
+    expect(instance.title).toHaveBeenCalledWith(TITLE);
+    expect(instance.body).not.toHaveBeenCalled();
+    expect(instance.divider).toHaveBeenCalledTimes(1);
+    expect(instance.label).toHaveBeenCalledTimes(1);
+    expect(instance.header).toHaveBeenCalledTimes(1);
     expect(instance.button).toHaveBeenCalledTimes(4);
     expect(instance.button).toHaveBeenNthCalledWith(1, BUTTON1.TEXT, BUTTON1.ICON);
     expect(instance.button).toHaveBeenNthCalledWith(2, BUTTON2.TEXT, BUTTON2.ICON);

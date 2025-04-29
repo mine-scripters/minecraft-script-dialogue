@@ -150,6 +150,19 @@ export class MultiButtonDialogue<T extends string, Callback = undefined> extends
     ]) as MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback>;
   }
 
+  /**
+   * Adds multiple buttons and ui elements to the multi button script dialogue.
+   * @param buttons array of buttons
+   */
+  addElements<NAMES extends string, ButtonCallback = undefined>(
+    elements: Array<MultiButton<NAMES, ButtonCallback> | UIElement>
+  ): MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback> {
+    return new MultiButtonDialogue<T | NAMES, Callback | ButtonCallback>(this.title, this.body, [
+      ...this.elements,
+      ...elements,
+    ]) as MultiButtonDialogue<NonNullable<T | NAMES>, Callback | ButtonCallback>;
+  }
+
   protected getShowable(_options: ResolvedShowDialogueOptions): Showable<ActionFormResponse> {
     if (this.elements.length === 0) {
       throw new MissingButtonsException();

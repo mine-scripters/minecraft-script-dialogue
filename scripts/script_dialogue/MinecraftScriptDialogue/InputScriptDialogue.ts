@@ -441,7 +441,7 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
    * @see {@link inputToggle}
    * @see {@link inputText}
    */
-  addElements<KEY extends string>(elements: Array<InputElement<KEY>>) {
+  addElements<KEY extends string>(elements: Array<InputElement<KEY> | UIElement>) {
     return new InputScriptDialogue<K | KEY>(this.title, [...this.elements, ...elements], this.submitButton);
   }
 

@@ -66,6 +66,10 @@ export interface Header {
 
 export type UIElement = Divider | Label | Header;
 
+export const uiDivider = (): Divider => ({ type: 'divider' });
+export const uiLabel = (text: ScriptDialogueString): Label => ({ type: 'label', text });
+export const uiHeader = (text: ScriptDialogueString): Header => ({ type: 'header', text });
+
 /**
  * Options used when opening a script dialogue.
  * Controls the targeted player, the use of the camera and if we want to wait if the user is busy.
