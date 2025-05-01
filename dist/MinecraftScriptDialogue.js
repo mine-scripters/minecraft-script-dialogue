@@ -34,6 +34,9 @@ const DefaultShowDialogOptions = Object.freeze({
     busyRetriesCount: 5,
     busyRetriesTick: 5,
 });
+const uiDivider = () => ({ type: 'divider' });
+const uiLabel = (text) => ({ type: 'label', text });
+const uiHeader = (text) => ({ type: 'header', text });
 /**
  * Base class for all the script dialogues
  *
@@ -798,7 +801,12 @@ class InputScriptDialogue extends ScriptDialogue {
     }
     async processResponse(response, _options) {
         const formValues = response.formValues ?? this.elements.map((_e) => undefined);
-        const values = this.elements.filter((e) => !('type' in e)).map((element, index) => {
+        // Todo: remove this when its out of beta and this still works
+        // (this.elements.filter((e) => !('type' in e)) as Array<InputElement<K>>)
+        const values = this.elements.flatMap((element, index) => {
+            if ('type' in element) {
+                return [];
+            }
             const name = element.name;
             let value = 0;
             const formValue = formValues[index];
@@ -816,9 +824,11 @@ class InputScriptDialogue extends ScriptDialogue {
                     value = formValue;
                 }
             }
-            return {
-                [name]: value,
-            };
+            return [
+                {
+                    [name]: value,
+                },
+            ];
         });
         return new InputScriptDialogueResponse(Object.assign({}, ...values));
     }
@@ -850,5 +860,5 @@ class MissingDropdownOptionsError extends Error {
     }
 }
 
-export { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse, DualButtonScriptDialogue, InputScriptDialogueResponse, MissingButtonsException, MissingElementsError, MultiButtonDialogue, ScriptDialogue, ScriptDialogueResponse, TRANSLATE, dualButtonScriptDialogue, inputDropdown, inputScriptDialogue, inputSlider, inputText, inputToggle, multiButtonScriptDialogue };
+export { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse, DualButtonScriptDialogue, InputScriptDialogueResponse, MissingButtonsException, MissingElementsError, MultiButtonDialogue, ScriptDialogue, ScriptDialogueResponse, TRANSLATE, dualButtonScriptDialogue, inputDropdown, inputScriptDialogue, inputSlider, inputText, inputToggle, multiButtonScriptDialogue, uiDivider, uiHeader, uiLabel };
 //# sourceMappingURL=MinecraftScriptDialogue.js.map

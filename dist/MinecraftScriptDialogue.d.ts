@@ -50,6 +50,9 @@ interface Header {
     text: ScriptDialogueString;
 }
 type UIElement = Divider | Label | Header;
+declare const uiDivider: () => Divider;
+declare const uiLabel: (text: ScriptDialogueString) => Label;
+declare const uiHeader: (text: ScriptDialogueString) => Header;
 /**
  * Options used when opening a script dialogue.
  * Controls the targeted player, the use of the camera and if we want to wait if the user is busy.
@@ -593,5 +596,5 @@ interface TranslateType {
     (translate: string, ...with_: Array<string>): RawMessage;
 }
 declare const TRANSLATE: TranslateType;
-export { dualButtonScriptDialogue, DualButtonScriptDialogue, multiButtonScriptDialogue, MultiButtonDialogue, inputText, inputToggle, inputSlider, inputDropdown, inputScriptDialogue, InputScriptDialogueResponse, MissingElementsError, ButtonDialogueResponse, ScriptDialogueResponse, ScriptDialogue, DialogueCanceledResponse, DialogueRejectedResponse, ShowDialogueOptions, ScriptDialogueString, MissingButtonsException, TRANSLATE };
+export { dualButtonScriptDialogue, DualButtonScriptDialogue, multiButtonScriptDialogue, MultiButtonDialogue, inputText, inputToggle, inputSlider, inputDropdown, inputScriptDialogue, InputScriptDialogueResponse, MissingElementsError, ButtonDialogueResponse, ScriptDialogueResponse, ScriptDialogue, DialogueCanceledResponse, DialogueRejectedResponse, ShowDialogueOptions, ScriptDialogueString, MissingButtonsException, uiDivider, uiLabel, uiHeader, TRANSLATE };
 export type { DualButton, MultiButton, InputElement, InputWithDefaultValue, InputText, InputToggle, InputSlider, InputDropdown, InputDropdownOption, InputScriptDialogue, InputValue, InputScriptDialogueResponseValues };
