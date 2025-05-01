@@ -515,7 +515,13 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
   ): Promise<InputScriptDialogueResponse<K>> {
     const formValues = response.formValues ?? this.elements.map((_e) => undefined);
 
-    const values = (this.elements.filter((e) => !('type' in e)) as Array<InputElement<K>>).map((element, index) => {
+    // Todo: remove this when its out of beta and this still works
+    // (this.elements.filter((e) => !('type' in e)) as Array<InputElement<K>>)
+    const values = this.elements.flatMap((element, index) => {
+      if ('type' in element) {
+        return [];
+      }
+
       const name = element.name;
       let value: InputValue = 0;
       const formValue = formValues[index];
@@ -536,9 +542,11 @@ export class InputScriptDialogue<K extends string> extends ScriptDialogue<InputS
         }
       }
 
-      return {
-        [name]: value,
-      };
+      return [
+        {
+          [name]: value,
+        },
+      ];
     });
 
     return new InputScriptDialogueResponse<K>(Object.assign({}, ...values));

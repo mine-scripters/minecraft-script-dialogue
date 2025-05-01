@@ -153,9 +153,12 @@ describe('InputScriptDialogue', () => {
       formValues: [
         2, // dropdown
         55, // slider
+        undefined, // divider
+        undefined, // header
         'hello world', // text
         false, //toggle
-        1, // dropdown2
+        1, // dropdown2,
+        undefined, // label
       ],
       canceled: false,
     });
