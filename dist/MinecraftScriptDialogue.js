@@ -33,6 +33,13 @@ const DefaultShowDialogOptions = Object.freeze({
 });
 let isCameraLockingEnabled = true;
 /**
+ * Disables camera locking globally, regardless of settings
+ * @deprecated Removing on 2.0.0
+ */
+const disableCameraLocking = () => {
+    isCameraLockingEnabled = false;
+};
+/**
  * Base class for all the script dialogues
  *
  * @category Script dialogue
@@ -71,7 +78,7 @@ class ScriptDialogue {
             }
         }
         finally {
-            if (resolvedOptions.lockPlayerCamera) {
+            if (isCameraLockingEnabled && resolvedOptions.lockPlayerCamera) {
                 await this.unlockPlayerCamera(resolvedOptions);
             }
         }
@@ -721,5 +728,5 @@ class MissingDropdownOptionsError extends Error {
     }
 }
 
-export { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse, DualButtonScriptDialogue, InputScriptDialogueResponse, MissingButtonsException, MissingElementsError, MultiButtonDialogue, ScriptDialogue, ScriptDialogueResponse, TRANSLATE, dualButtonScriptDialogue, inputDropdown, inputScriptDialogue, inputSlider, inputText, inputToggle, multiButtonScriptDialogue };
+export { ButtonDialogueResponse, DialogueCanceledResponse, DialogueRejectedResponse, DualButtonScriptDialogue, InputScriptDialogueResponse, MissingButtonsException, MissingElementsError, MultiButtonDialogue, ScriptDialogue, ScriptDialogueResponse, TRANSLATE, disableCameraLocking, dualButtonScriptDialogue, inputDropdown, inputScriptDialogue, inputSlider, inputText, inputToggle, multiButtonScriptDialogue };
 //# sourceMappingURL=MinecraftScriptDialogue.js.map

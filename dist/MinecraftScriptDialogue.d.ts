@@ -47,6 +47,11 @@ interface ShowDialogueOptions extends Partial<OptionalShowDialogueOptions>, Requ
 interface ResolvedShowDialogueOptions extends RequiredShowDialogueOptions, OptionalShowDialogueOptions {
 }
 /**
+ * Disables camera locking globally, regardless of settings
+ * @deprecated Removing on 2.0.0
+ */
+declare const disableCameraLocking: () => void;
+/**
  * Base class for all the script dialogues
  *
  * @category Script dialogue
@@ -560,5 +565,5 @@ interface TranslateType {
     (translate: string, ...with_: Array<string>): RawMessage;
 }
 declare const TRANSLATE: TranslateType;
-export { dualButtonScriptDialogue, DualButtonScriptDialogue, multiButtonScriptDialogue, MultiButtonDialogue, inputText, inputToggle, inputSlider, inputDropdown, inputScriptDialogue, InputScriptDialogueResponse, MissingElementsError, ButtonDialogueResponse, ScriptDialogueResponse, ScriptDialogue, DialogueCanceledResponse, DialogueRejectedResponse, ShowDialogueOptions, ScriptDialogueString, MissingButtonsException, TRANSLATE };
+export { dualButtonScriptDialogue, DualButtonScriptDialogue, multiButtonScriptDialogue, MultiButtonDialogue, inputText, inputToggle, inputSlider, inputDropdown, inputScriptDialogue, InputScriptDialogueResponse, MissingElementsError, ButtonDialogueResponse, ScriptDialogueResponse, ScriptDialogue, DialogueCanceledResponse, DialogueRejectedResponse, ShowDialogueOptions, ScriptDialogueString, MissingButtonsException, disableCameraLocking, TRANSLATE };
 export type { DualButton, MultiButton, InputElement, InputWithDefaultValue, InputText, InputToggle, InputSlider, InputDropdown, InputDropdownOption, InputScriptDialogue, InputValue, InputScriptDialogueResponseValues };
