@@ -14,6 +14,7 @@ interface OptionalShowDialogueOptions {
      * Locks the camera when opening a script dialogue. This prevents the camera from panning when moving the
      * mouse/dragging on transitions.
      * @defaultValue true
+     * @deprecated Will be removed on 2.0.0 - this has to be implemented outside
      */
     lockPlayerCamera: boolean;
     /**

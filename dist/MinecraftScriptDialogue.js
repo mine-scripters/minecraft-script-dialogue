@@ -31,6 +31,7 @@ const DefaultShowDialogOptions = Object.freeze({
     busyRetriesCount: 5,
     busyRetriesTick: 5,
 });
+let isCameraLockingEnabled = true;
 /**
  * Base class for all the script dialogues
  *
@@ -49,7 +50,7 @@ class ScriptDialogue {
     async open(options) {
         const resolvedOptions = this.resolveShowDialogueOptions(options);
         try {
-            if (resolvedOptions.lockPlayerCamera) {
+            if (isCameraLockingEnabled && resolvedOptions.lockPlayerCamera) {
                 this.lockPlayerCamera(resolvedOptions);
             }
             try {
