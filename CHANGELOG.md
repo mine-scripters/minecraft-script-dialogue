@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.3.0...v1.3.1) (2025-05-16)
+
+
+### Bug Fixes
+
+* Expose disableCameraLocking ([43105a0](https://github.com/mine-scripters/minecraft-script-dialogue/commit/43105a0df210b7eac9bbbb83c72d66d700533fb4))
+
 ## [1.3.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.2.0...v1.3.0) (2025-05-16)
 
 
