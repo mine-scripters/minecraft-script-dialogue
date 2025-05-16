@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.2.0...v1.3.0) (2025-05-16)
+
+
+### Features
+
+* adds ability to disable camera locking globally ([b71cc60](https://github.com/mine-scripters/minecraft-script-dialogue/commit/b71cc602ddb0d9da5d0835940ac2e412cdbddbaf))
+
 ## [1.2.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.5...v1.2.0) (2025-02-20)
 
 
