@@ -1,5 +1,5 @@
 import { FormCancelationReason, MessageFormResponse } from '@minecraft/server-ui';
-import { ButtonDialogueResponse, DialogueCanceledResponse } from './ScriptDialogue';
+import { ButtonDialogueResponse, DialogueCanceledResponse, disableCameraLocking } from './ScriptDialogue';
 import { mockPlayer } from '../test/server-utils';
 import { dualButtonScriptDialogue } from './DualButtonScriptDialogue';
 
@@ -28,6 +28,15 @@ describe('ScriptDialogue', () => {
     expect(player.runCommand).toHaveBeenNthCalledWith(2, `inputpermission set "Steve" movement disabled`);
     expect(player.runCommand).toHaveBeenNthCalledWith(3, `inputpermission set "Steve" camera enabled`);
     expect(player.runCommand).toHaveBeenNthCalledWith(4, `inputpermission set "Steve" movement enabled`);
+  });
+
+  it('does not lock player camera if globally disabled', async () => {
+    const player = mockPlayer();
+
+    disableCameraLocking();
+    await createDualButtonScriptDialogue().open({ player, lockPlayerCamera: true });
+
+    expect(player.runCommand).not.toHaveBeenCalled();
   });
 
   it('does not lock player camera', async () => {

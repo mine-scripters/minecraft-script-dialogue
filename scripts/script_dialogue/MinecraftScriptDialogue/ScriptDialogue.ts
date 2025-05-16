@@ -24,6 +24,7 @@ export interface OptionalShowDialogueOptions {
    * Locks the camera when opening a script dialogue. This prevents the camera from panning when moving the
    * mouse/dragging on transitions.
    * @defaultValue true
+   * @deprecated Will be removed on 2.0.0 - this has to be implemented outside
    */
   lockPlayerCamera: boolean;
   /**
@@ -57,6 +58,16 @@ export interface ShowDialogueOptions extends Partial<OptionalShowDialogueOptions
 
 export interface ResolvedShowDialogueOptions extends RequiredShowDialogueOptions, OptionalShowDialogueOptions {}
 
+let isCameraLockingEnabled: boolean = true;
+
+/**
+ * Disables camera locking globally, regardless of settings
+ * @deprecated Removing on 2.0.0
+ */
+export const disableCameraLocking = () => {
+  isCameraLockingEnabled = false;
+};
+
 /**
  * Base class for all the script dialogues
  *
@@ -77,7 +88,7 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
     const resolvedOptions = this.resolveShowDialogueOptions(options);
 
     try {
-      if (resolvedOptions.lockPlayerCamera) {
+      if (isCameraLockingEnabled && resolvedOptions.lockPlayerCamera) {
         this.lockPlayerCamera(resolvedOptions);
       }
 
@@ -97,7 +108,7 @@ export abstract class ScriptDialogue<T extends ScriptDialogueResponse> {
         }
       }
     } finally {
-      if (resolvedOptions.lockPlayerCamera) {
+      if (isCameraLockingEnabled && resolvedOptions.lockPlayerCamera) {
         await this.unlockPlayerCamera(resolvedOptions);
       }
     }
