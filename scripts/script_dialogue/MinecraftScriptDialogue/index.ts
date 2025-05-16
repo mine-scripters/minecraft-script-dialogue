@@ -18,6 +18,7 @@ export {
   ShowDialogueOptions,
   ScriptDialogueString,
   MissingButtonsException,
+  disableCameraLocking,
 } from './ScriptDialogue';
 export { TRANSLATE } from './Utils';
 
