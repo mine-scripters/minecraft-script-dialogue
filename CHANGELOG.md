@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.0.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.5...v2.0.0) (2025-07-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use the input options for each type
+* Adding support for submitButton, divider, label and header
+
+### Features
+
+* Adding support for submitButton, divider, label and header ([91c1445](https://github.com/mine-scripters/minecraft-script-dialogue/commit/91c144573eb361024562a4e499472325b13e5847))
+* Use the input options for each type ([325ff75](https://github.com/mine-scripters/minecraft-script-dialogue/commit/325ff75718861133df80229aedfa6ea24d7d70f9))
+
+
+### Bug Fixes
+
+* add exports of ui elements in index.ts ([f7dfa8a](https://github.com/mine-scripters/minecraft-script-dialogue/commit/f7dfa8a98cd65f6e007d9030519d5971a58c9c64))
+* Allows to pass new ui elements using addElements functions ([bc331d3](https://github.com/mine-scripters/minecraft-script-dialogue/commit/bc331d3c078cca522ddbf6f2d78beecb1e0eb6e8))
+* Since 1.21.80.26, it counts the divider/header/label as spaces in the values ([dfad771](https://github.com/mine-scripters/minecraft-script-dialogue/commit/dfad7712589cfec9e05cc32c819712c0dccf20bc))
+
 ## [1.1.5](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.4...v1.1.5) (2024-05-01)
 
 
