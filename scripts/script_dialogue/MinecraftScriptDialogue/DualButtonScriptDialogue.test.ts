@@ -35,8 +35,8 @@ describe('DualButtonScriptDialogue', () => {
     const instance = jest.mocked(MessageFormData).mock.results[0].value;
 
     expect(instance.body).not.toHaveBeenCalled();
-    expect(instance.button1).toHaveBeenCalledWith('my.bottom.button.text');
-    expect(instance.button2).toHaveBeenCalledWith('my.top.button.text');
+    expect(instance.button1).toHaveBeenCalledWith('my.top.button.text');
+    expect(instance.button2).toHaveBeenCalledWith('my.bottom.button.text');
     expect(instance.title).toHaveBeenCalledWith('my.title');
     expect(instance.show).toHaveBeenCalledWith(player);
   });
@@ -51,8 +51,8 @@ describe('DualButtonScriptDialogue', () => {
     const instance = jest.mocked(MessageFormData).mock.results[0].value;
 
     expect(instance.body).toHaveBeenCalledWith('this-is-it');
-    expect(instance.button1).toHaveBeenCalledWith('my.bottom.button.text');
-    expect(instance.button2).toHaveBeenCalledWith('my.top.button.text');
+    expect(instance.button1).toHaveBeenCalledWith('my.top.button.text');
+    expect(instance.button2).toHaveBeenCalledWith('my.bottom.button.text');
     expect(instance.title).toHaveBeenCalledWith('my.title');
     expect(instance.show).toHaveBeenCalledWith(player);
   });
