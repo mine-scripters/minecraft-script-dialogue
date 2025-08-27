@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v2.0.0...v2.0.1) (2025-08-27)
+
+
+### Bug Fixes
+
+* order of buttons in dual button changed ([33500a4](https://github.com/mine-scripters/minecraft-script-dialogue/commit/33500a4d0e8382525a349afec7586ec9ffee5c8a))
+
 ## [2.0.0](https://github.com/mine-scripters/minecraft-script-dialogue/compare/v1.1.5...v2.0.0) (2025-07-04)
 
 
