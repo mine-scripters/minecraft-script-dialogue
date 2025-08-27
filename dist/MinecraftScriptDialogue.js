@@ -252,8 +252,8 @@ class DualButtonScriptDialogue extends ScriptDialogue {
         if (this.body) {
             data.body(this.body);
         }
-        data.button1(this.bottomButton.text);
-        data.button2(this.topButton.text);
+        data.button1(this.topButton.text);
+        data.button2(this.bottomButton.text);
         return data;
     }
     async processResponse(response, _options) {
